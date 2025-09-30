@@ -84,7 +84,7 @@ useEffect(() => {
             <Button
               variant="ghost"
               size="icon"
-              className="md:hidden"
+              className="md:hidden bg-red"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -95,24 +95,16 @@ useEffect(() => {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="md:hidden py-4 space-y-4 border-t border-border">
-            <a href="#" className="block text-base font-medium text-foreground hover:text-secondary">
-              World
-            </a>
-            <a href="#" className="block text-base font-medium text-foreground hover:text-secondary">
-              Politics
-            </a>
-            <a href="#" className="block text-base font-medium text-foreground hover:text-secondary">
-              Business
-            </a>
-            <a href="#" className="block text-base font-medium text-foreground hover:text-secondary">
-              Technology
-            </a>
-            <a href="#" className="block text-base font-medium text-foreground hover:text-secondary">
-              Culture
-            </a>
+          <div className="grid grid-cols-3 md:hidden py-4 space-y-4 border-t border-border">
+            {links.map((link) => (
+                  <Link href={link.href} key={link.name} className="text-sm font-medium text-foreground hover:text-secondary transition-colors">
+                  <Button  size="sm" className="rounded-lg hover:cursor-pointer bg-red " >
+                        {link.name}
+                  </Button>
+                </Link>
+            ))}
             <div className="pt-4 space-y-2">
-              <Button className="w-full">Subscribe</Button>
+              <Button className="w-full  ">Log In</Button>
             </div>
           </div>
         )}

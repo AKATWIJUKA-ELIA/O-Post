@@ -13,12 +13,7 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
-import type * as admin from "../admin.js";
-import type * as articles from "../articles.js";
-import type * as auth from "../auth.js";
-import type * as http from "../http.js";
-import type * as newsletter from "../newsletter.js";
-import type * as router from "../router.js";
+import type * as posts from "../posts.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -29,12 +24,7 @@ import type * as router from "../router.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
-  admin: typeof admin;
-  articles: typeof articles;
-  auth: typeof auth;
-  http: typeof http;
-  newsletter: typeof newsletter;
-  router: typeof router;
+  posts: typeof posts;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

@@ -1,5 +1,5 @@
 import { Facebook, Twitter, Instagram, Linkedin, Youtube } from "lucide-react"
-import { currentYear } from "@/src/lib/utils"
+import { currentYear } from "@/lib/utils"
 
 export function Footer() {
   return (

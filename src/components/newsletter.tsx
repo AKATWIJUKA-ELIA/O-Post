@@ -20,12 +20,12 @@ export function Newsletter() {
   return (
     <section className="py-16 md:py-24 bg-accent text-accent-foreground">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className=" flex  mx-aut0 items-center text-center space-y-6 p-2 border  rounded-2xl ">
+        <div className=" flex flex-col md:flex-row  md:mx-aut0 items-center text-center space-y-6 p-2 border  rounded-2xl ">
           <div className="flex flex-col gap-4 items-center justify-center  mb-4 ">
             <Mail className="flex h-8 w-8" />
             <div className="flex flex-col items-center">
                 <h2 className="flex font-serif text-3xl md:text-4xl font-bold ">Stay Informed with Our Newsletter</h2>
-          <p className=" flex text-lg text-accent-foreground/80 leading-relaxed">
+          <p className=" flex md:text-lg text-accent-foreground/80 leading-relaxed">
             Get the day's top stories delivered to your inbox every morning. Join over 100,000 readers who trust our
             journalism.
           </p>

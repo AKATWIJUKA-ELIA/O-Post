@@ -39,11 +39,11 @@ export function HeroSection() {
           {/* Left Content */}
           <div className="flex flex-col p-2 group  " >
                 <div className="relative  rounded-lg overflow-hidden">
-                <Badge variant="secondary" className=" absolute z-30 top-4 left-4 group-hover:top-4 group-hover:left-4 bg-red text-white font-bold  px-3 py-1 rounded-lg transition-all">
+                <Badge variant="secondary" className=" absolute z-50 md:z-30 top-4 left-4 group-hover:top-4 group-hover:left-4 bg-red text-white font-bold  px-3 py-1 rounded-lg transition-all">
               Breaking News
             </Badge>
             <img src="/climate-summit-leaders.png" alt="Climate Summit" className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300" />
-            <h1 className="absolute z-30 bottom-6 bg-black/50 font-serif text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-balance group-hover:bottom-8 transition-all duration-300">
+            <h1 className="absolute z-30 bottom-6 bg-black/50 font-serif text-2xl md:text-5xl lg:text-6xl font-bold leading-tight text-balance group-hover:bottom-8 transition-all duration-300">
               Global Climate Summit Reaches Historic Agreement
             </h1>
 
