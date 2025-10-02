@@ -6,6 +6,8 @@ export const CreatePost = mutation({
                 authorId: v.id("users"),
                 title: v.string(),
                 content: v.string(),
+                excerpt: v.string(),
+                postImage: v.string(),
                 upvotes: v.number(),
                 downvotes: v.number(),
         },handler:async(ctx,args)=>{
