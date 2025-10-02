@@ -1,9 +1,10 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Button } from "@/src/components/ui/button"
+import { Button } from "@/components/ui/button"
 import { Menu, X, Search } from "lucide-react"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 const links: { name: string; href: string }[] = [
         { name: "World", href: "#" },
         { name: "Politics", href: "#" },
@@ -22,6 +23,11 @@ const links: { name: string; href: string }[] = [
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [sticky, setSticky] = useState(false)
+        const pathname = usePathname();
+
+         if(pathname.includes("admin") ){
+                        return null
+                }
 
 
 useEffect(() => {

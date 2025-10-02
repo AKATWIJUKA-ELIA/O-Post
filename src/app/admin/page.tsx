@@ -141,9 +141,9 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen bg-muted/30">
       <header className="border-b bg-background">
-        <div className="container mx-auto px-4 py-4">
-          <h1 className="text-2xl font-bold">Admin Dashboard</h1>
-          <p className="text-sm text-muted-foreground">Manage your news posts</p>
+        <div className="container mx-auto px-4 py-4 bg-blue ">
+          <h1 className="text-4xl font-bold text-white "> O-Post Admin </h1>
+          <p className="text-sm text-gray-500">Manage your news posts</p>
         </div>
       </header>
 

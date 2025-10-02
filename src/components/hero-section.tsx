@@ -1,5 +1,5 @@
 import { ArrowRight } from "lucide-react"
-import { Badge } from "@/src/components/ui/badge"
+import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 const news = [
         {

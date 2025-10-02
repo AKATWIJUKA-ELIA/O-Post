@@ -1,9 +1,9 @@
 
-import { HeroSection } from "@/src/components/hero-section"
-import { FeaturedStories } from "@/src/components/featured-stories"
-import { CategoryGrid } from "@/src/components/category-grid"
-import { LatestNews } from "@/src/components/latest-news"
-import { Newsletter } from "@/src/components/newsletter"
+import { HeroSection } from "@/components/hero-section"
+import { FeaturedStories } from "@/components/featured-stories"
+import { CategoryGrid } from "@/components/category-grid"
+import { LatestNews } from "@/components/latest-news"
+import { Newsletter } from "@/components/newsletter"
 
 
 export default function HomePage() {
