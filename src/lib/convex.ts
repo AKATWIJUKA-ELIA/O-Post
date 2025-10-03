@@ -21,7 +21,7 @@ export async function UpdateUser(userToUpdate: UpstreamUser | null) {
 }
 export const getUserByToken = async (token: string) => {
     try {
-        const user = await convex.query(api.users.GetCustomerByToken, { token });
+        const user = await convex.query(api.users.GetUserByToken, { token });
         if (!user.success || !user.user) {
             return { success: false, message: "User not found", status: 404 };
         }

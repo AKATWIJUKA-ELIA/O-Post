@@ -47,7 +47,6 @@ const useAuthenticate = () => {
         return { success: false, message:"Login failed" };
         }
         const user = res.user;
-        console.log("Authenticated user:", user);
         
                         try {
                         const response = await fetch('/api/createsession', {
@@ -85,9 +84,9 @@ const useAuthenticate = () => {
                         
                         
                         return { success: true, status: 201, message: 'Success' };
-                } catch (error) {
-                        console.error('Error during session creation:', error);
-                        return { success: false, status: 500, message: `Internal Server Error ${error}` };
+                } catch  {
+                        console.error('Error during session creation:');
+                        return { success: false, status: 500, message: `Internal Server Error ` };
                 }
       } catch {
         return { success: false, message: "Internal Server Error" };

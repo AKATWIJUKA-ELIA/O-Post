@@ -1,7 +1,7 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { Libre_Baskerville, Inter } from "next/font/google"
-import { Analytics } from "@vercel/analytics/next"
+// import { Analytics } from "@vercel/analytics/next"
 import ClientProviders from "./Providers"
 import { Suspense } from "react"
 import "./globals.css"
@@ -39,7 +39,7 @@ export default function RootLayout({
         <ClientProviders>
         <Header />
         <Suspense fallback={null}>{children}</Suspense>
-        <Analytics />
+        {/* <Analytics /> */}
         <ConditionalFooter />
         </ClientProviders>
       </body>

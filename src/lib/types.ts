@@ -48,3 +48,10 @@ export interface UpstreamUser {
         updatedAt: number,
         lastLogin?: number,
 }
+
+export interface UserProfile {
+        userId: string;
+        role: string; 
+        isVerified: boolean;
+        expiresAt:Date
+}

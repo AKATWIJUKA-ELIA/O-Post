@@ -2,9 +2,14 @@
 
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Menu, X, Search } from "lucide-react"
+import { Menu, X, Search,LogOut as SignOut } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { useUser } from "@/hooks/useUser"
+import { Id } from "../../convex/_generated/dataModel"
+import { UserProfile } from "@/lib/types"
+import useLogout from "@/hooks/useLogout"
+
 const links: { name: string; href: string }[] = [
         { name: "World", href: "#" },
         { name: "Politics", href: "#" },
@@ -20,15 +25,34 @@ const links: { name: string; href: string }[] = [
         { name: "Lifestyle", href: "#" },
        { name: "Education", href: "#" },
 ]
-export function Header() {
+export  function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [sticky, setSticky] = useState(false)
+        const [user, setUser] = useState<UserProfile|null>(null);
         const pathname = usePathname();
+        const {LogOut} = useLogout();
 
          if(pathname.includes("admin") ){
                         return null
                 }
 
+useEffect(() => {
+        (async () => {
+                const { success, session } = await useUser();
+                if (success && session) {
+                        setUser({
+                                userId: session.userId as Id<"users">,
+                                role: session.role as string,
+                                isVerified: session.isVerified as boolean,
+                                expiresAt: session.expiresAt as Date,
+                        });
+                        return;
+                }
+                setUser(null);
+
+        })();
+        
+}, []);
 
 useEffect(() => {
   const handleScroll = () => {
@@ -51,6 +75,14 @@ useEffect(() => {
   };
 }, []);
 
+const handleLogout = async () => {
+        await LogOut().then((data)=>{
+                if(data?.success){
+                        setUser(null);
+                }
+
+        });
+}
 
 
   return (
@@ -84,9 +116,23 @@ useEffect(() => {
               <Search className="h-5 w-5" />
               <span className="sr-only">Search</span>
             </Button>
-            <Link href="/sign-in">
+            {user?.userId ? (
+               <>
+                <Link href="/profile">
+            <Button className="hidden sm:inline-flex bg-whitee rounded-full  border-white  text-white font-bold hover:cursor-pointer hover:bg-red">Profile</Button>
+            </Link>
+        <Button onClick={()=>{handleLogout()}} className="flex bg-red hover:bg-red-900 hover:cursor-pointer w-14 rounded-2xl  " aria-label="logout" >
+                <SignOut className="w-14" />
+            </Button>    
+               </>
+        ):(
+                <>
+                <Link href="/sign-in">
             <Button className="hidden sm:inline-flex bg-whitee rounded-full  border-white  text-white font-bold hover:cursor-pointer hover:bg-red">Log in</Button>
             </Link>
+            
+            </>
+            )}
 
             {/* Mobile menu button */}
             <Button

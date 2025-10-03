@@ -60,7 +60,7 @@ export const CreateUser = mutation({
         }
         })
 
-export const GetCustomer = query({
+export const GetUserByEmail = query({
                 args:{email:v.string()},
                 handler:async(ctx,args)=>{
                         const customer = await ctx.db.query("users")
@@ -99,7 +99,7 @@ export const UpdateUser = mutation({
               
         }})
 
-        export const GetCustomerByToken = query({
+        export const GetUserByToken = query({
                 args:{token:v.string()},
                 handler:async(ctx,args)=>{
                         const customer = await ctx.db.query("users")
@@ -119,7 +119,7 @@ export const UpdateUser = mutation({
                 export const AuthenticateUser = action({
                 args:{email:v.string(), password:v.string()},
                 handler:async(ctx,args): Promise<Response>=>{
-                        const user = await ctx.runQuery(api.users.GetCustomer, {
+                        const user = await ctx.runQuery(api.users.GetUserByEmail, {
                                 email: args.email,
                         });
                         if (!user.success || !user.user) {
@@ -149,3 +149,11 @@ export const UpdateUser = mutation({
                    } };
 }
 })
+
+        export const GetUserById = query({
+        args:{id: v.id("users")},
+              handler: async (ctx, args) => {
+                     const Customer = await ctx.db.query("users").filter((q)=> q.eq(q.field("_id"), args.id)).first() 
+                    return Customer
+                    },
+                    })

@@ -22,7 +22,7 @@ export async function decrypt(session: string | undefined = '') {
 //     console.log("session",session)
     return payload
   } catch (error) {
-    console.error('Failed to verify session',error)
+    console.error('Failed to verify session',error);
   }
 }
 
@@ -66,6 +66,13 @@ export async function updateSession() {
 }
 
 export async function deleteSession() {
-  const cookieStore = await cookies()
-  cookieStore.delete('session')
+        try{
+                  const cookieStore = cookies()
+                  cookieStore.delete('O-Session')
+                  return true;
+        }catch(error){
+                console.error('Error deleting session:', error);
+                return false;
+        }
+
 }
