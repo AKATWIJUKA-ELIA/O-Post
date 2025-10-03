@@ -1,10 +1,10 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit"
+import { Id } from "../../convex/_generated/dataModel";
 
 interface User {
-        User_id: string;
+        User_id: Id<"users">;
         Username: string;
         email:string;
-        role:string;
         profilePicture:string;
 }
 

@@ -84,7 +84,9 @@ useEffect(() => {
               <Search className="h-5 w-5" />
               <span className="sr-only">Search</span>
             </Button>
+            <Link href="/sign-in">
             <Button className="hidden sm:inline-flex bg-whitee rounded-full  border-white  text-white font-bold hover:cursor-pointer hover:bg-red">Log in</Button>
+            </Link>
 
             {/* Mobile menu button */}
             <Button

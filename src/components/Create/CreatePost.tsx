@@ -7,51 +7,33 @@ import { Save } from 'lucide-react'
 import React from 'react'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Select } from '@/components/ui/select'
 import { Label } from '@/components/ui/label'
 import { Post } from '@/lib/types'
 import { useRef } from 'react'
+import { useAppSelector } from '@/hooks'
+import useCreatePost from '@/hooks/useCreatePost'
+import { useMutation } from 'convex/react'
+import { api } from '../../../convex/_generated/api'
+import { useNotification } from '@/app/NotificationContext'
 
 const CreatePost = () => {
           const [isCreating, setIsCreating] = useState(false)
           const [imagePreview, setImagePreview] = useState<string>("");
-          const [editingPost, setEditingPost] = useState<Post | null>(null);
           const [selectedImage, setSelectedImage] = useState<File|null>(null);
            const fileInputRef = useRef<HTMLInputElement>(null);
+            const user = useAppSelector((state) => state.user.user);
           const [formData, setFormData] = useState<Partial<Post>>({
     title: "",
     excerpt: "",
     content: "",
     category: "Politics",
-    author: "",
-    imageUrl: "",
-    status: "draft",
+    authorId: user?.User_id,
+    postImage: "",
   })
-    const [posts, setPosts] = useState<Post[]>([
-    {
-      id: "1",
-      title: "Breaking: Major Economic Reform Announced",
-      excerpt: "Government unveils comprehensive plan to reshape financial sector",
-      content: "Full article content here...",
-      category: "Politics",
-      author: "Sarah Johnson",
-      imageUrl: "/economic-reform.jpg",
-      publishedAt: "2024-01-15",
-      status: "published",
-    },
-    {
-      id: "2",
-      title: "Tech Giants Face New Regulations",
-      excerpt: "New legislation targets data privacy and market competition",
-      content: "Full article content here...",
-      category: "Technology",
-      author: "Michael Chen",
-      imageUrl: "/technology-regulation.jpg",
-      publishedAt: "2024-01-14",
-      status: "published",
-    },
-  ])
 
+  const generateUploadUrl = useMutation(api.posts.generateUploadUrl);
+  const {CreatePost} = useCreatePost();
+        const { setNotification } = useNotification();
   const categories = ["Politics", "Technology", "Business", "Culture", "Science", "Sports"]
 
     const handleInputChange = (field: keyof Post, value: string) => {
@@ -64,6 +46,16 @@ const CreatePost = () => {
                           fileInputRef.current.value = '';
                         }
                 }
+        const resetForm = () => {
+                    setFormData({
+      title: "",
+      authorId: user?.User_id,
+      excerpt: "",
+      content: "",
+      category: "Politics",
+      postImage: "",
+    })
+        }
           const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                   if (e.target.files) {
                       const file = e.target.files[0];
@@ -77,6 +69,7 @@ const CreatePost = () => {
                               if (file.size > maxFileSize) {
                                 alert(`"${file.name}" is too large. Maximum allowed size is 3MB.`);
                                 cleanImageField()
+                                return;
                               } else {
                                 setSelectedImage(file);
                               }
@@ -86,43 +79,79 @@ const CreatePost = () => {
                   }
                 }
 
-    const handleSavePost = () => {
-    if (editingPost) {
-      // Update existing post
-      setPosts(posts.map((post) => (post.id === editingPost.id ? ({ ...post, ...formData } as Post) : post)))
-      setEditingPost(null)
-    } else {
+    const handleSavePost = async() => {
+                if(!selectedImage){
+                        alert("Please select an image to upload.");
+                        return;
+                }
+        setIsCreating(true)
+         const TIMEOUT_MS = 20000; 
+        let imageUrl = "";
+         const withTimeout = <T,>(promise: Promise<T>, ms: number): Promise<T> => {
+                        return Promise.race([
+                          promise,
+                          new Promise<T>((_, reject) =>
+                            setTimeout(() => reject(new Error("Request timed out")), ms)
+                          
+                          ),
+                        ]);
+                      };
+
+                  try {
+                        await withTimeout((async () => {
+                         // Step 1: Get a short-lived upload URL
+                        const postUrl = await generateUploadUrl();
+                        const result = await fetch(postUrl, {
+                                    method: "POST",
+                                    headers: { "Content-Type": selectedImage?.type ?? "application/octet-stream" },
+                                    body: selectedImage,
+                                  });
+                                  
+                                  if (!result.ok) throw new Error("Failed to upload image");
+                                  const res= await result.json();
+                                        imageUrl = res.storageId;
+
+                        })(), TIMEOUT_MS);} catch {
+                        alert("Image upload timed out. Please try again.");
+                        setIsCreating(false)
+                        return;
+                        }
+   
       // Create new post
-      const newPost: Post = {
-        id: Date.now().toString(),
+        const newPost: Post = {
         title: formData.title || "",
         excerpt: formData.excerpt || "",
         content: formData.content || "",
         category: formData.category || "Politics",
-        author: formData.author || "",
-        imageUrl: formData.imageUrl || "/news-collage.png",
-        publishedAt: new Date().toISOString().split("T")[0],
-        status: formData.status || "draft",
+        authorId: user?.User_id!,
+        postImage: imageUrl || "/news-collage.png",
       }
-      setPosts([newPost, ...posts])
+       const NewPost =  await CreatePost(newPost)
+       const res  = await NewPost.json();
+        if(!res?.success){
+                setNotification({ 
+                        status: 'error',
+                         message: res.message || "Failed to create post. Please try again." 
+                        });
+        }
+        setNotification({ 
+                status: 'success',
+                 message: res.message || "Post created successfully!" 
+                });
+
+        console.log("Post to be created:", newPost)
       setIsCreating(false)
-    }
+    
 
     // Reset form
-    setFormData({
-      title: "",
-      excerpt: "",
-      content: "",
-      category: "Politics",
-      author: "",
-      imageUrl: "",
-      status: "draft",
-    })
+    resetForm()
+    cleanImageField()
+
   }
 
   return (
-      <div>
-                <Card>
+      <div className='' >
+                <Card className='bg-red/5' >
               <CardHeader>
                 <CardTitle className='text-red' >Create New Post</CardTitle>
                 <CardDescription>
@@ -176,16 +205,6 @@ const CreatePost = () => {
                   </div>
                 </div>
 
-                <div className="space-  y-2">
-                  <Label htmlFor="author" className='text-blue'>Author</Label>
-                  <Input
-                    id="author"
-                    placeholder="Author name"
-                    value={formData.author}
-                    onChange={(e) => handleInputChange("author", e.target.value)}
-                        className='rounded-xl'
-                  />
-                </div>
 
                 <div>
           <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700 dark:text-white">
@@ -203,28 +222,27 @@ const CreatePost = () => {
             className="appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           />
           { imagePreview.length > 0 && (
-              <div className="">
-                <div className="flex flex-wrap gap-2">
-                  
-                    <div  className="relative">
+              <div className="mt-4 p-1 rounded-md border border-dashed border-gray-500">
+                <div  className="relative bg-red/10 w-[100%] h-full  mx-auto rounded-md flex items-center justify-center border border-gray-300">
                       <Image
                         src={imagePreview || "/placeholder.svg"}
                         alt="Preview "
                         width={100}
                         height={100}
-                        className="h-20 w-20 object-cover rounded-md border border-gray-300"
+                        className="h-20 w-full object-cover rounded-md border border-gray-300"
                       />
                     </div>
-                </div>
               
               </div>
             )}
         </div>
 
                 <div className="flex gap-3 pt-4">
-                  <Button onClick={handleSavePost} className="flex-1">
+                  <Button  onClick={handleSavePost}
+                  disabled={isCreating||!formData.title||!formData.excerpt||!formData.content||!selectedImage}
+                   className="flex mx-auto bg-blue hover:cursor-pointer hover:bg-blue-700 text-white rounded-xl" >
                     <Save className="mr-2 h-4 w-4" />
-                    Create Post
+                    {isCreating?"Creating...":"Create Post"}
                   </Button>
                 </div>
               </CardContent>

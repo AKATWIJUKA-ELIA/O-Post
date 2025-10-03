@@ -29,6 +29,7 @@ import {
   SidebarHeader,
   SidebarMenu,
 } from "../components/ui/sidebar"
+import Image from "next/image"
 
 const data = {
   user: {
@@ -149,9 +150,11 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="offcanvas" {...props} className="h-[90%] mt-14 bg-blue-400" >
+    <Sidebar collapsible="icon" {...props} className="h-[90%] mt-1  bg-blue-400" >
       <SidebarHeader>
+        
         <SidebarMenu>
+                <Image src="/logo.png" width="400" height={50} alt="User Avatar" />
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>

@@ -4,6 +4,7 @@ import {type LucideIcon } from "lucide-react"
 import {LayoutDashboardIcon,HomeIcon,SquarePlus,Rows4,
         // Users,HandCoins,SquareStack,User
         Newspaper,
+        Clock
 
 } from "lucide-react"
 
@@ -15,7 +16,6 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import Link from "next/link";
-import { MdOutlinePending } from "react-icons/md";
 
 export function NavMain() {
         const items = [
@@ -43,7 +43,7 @@ export function NavMain() {
                 },
                 {
                         title: "Scheduled Posts",
-                        icon: MdOutlinePending   as unknown as LucideIcon,
+                        icon: Clock   as unknown as LucideIcon,
                         link:"/admin/pending",}
                 
                 

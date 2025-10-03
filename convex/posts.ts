@@ -1,5 +1,8 @@
 import {  v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+export const generateUploadUrl = mutation(async (ctx)=>{
+      return await ctx.storage.generateUploadUrl()
+})
 
 export const CreatePost = mutation({
         args:{
@@ -7,6 +10,7 @@ export const CreatePost = mutation({
                 title: v.string(),
                 content: v.string(),
                 excerpt: v.string(),
+                category: v.string(),
                 postImage: v.string(),
                 upvotes: v.number(),
                 downvotes: v.number(),
