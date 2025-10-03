@@ -8,6 +8,7 @@ import "./globals.css"
 import "./styles.css"
 import ConditionalFooter  from "@/components/ConditionalFooter/page"
 import { Header } from "@/components/header"
+import MessagePop from "@/components/MessagePop/page"
 
 const libreBaskerville = Libre_Baskerville({
   weight: ["400", "700"],
@@ -38,6 +39,7 @@ export default function RootLayout({
       <body className={`font-sans ${inter.variable} ${libreBaskerville.variable}`}>
         <ClientProviders>
         <Header />
+        <MessagePop />
         <Suspense fallback={null}>{children}</Suspense>
         {/* <Analytics /> */}
         <ConditionalFooter />

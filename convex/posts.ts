@@ -46,7 +46,7 @@ export const CreatePost = mutation({
         })
         export const GetAllPosts = query({
                 handler:async(ctx)=>{
-                        const posts = await ctx.db.query("posts").collect();
+                        const posts = await ctx.db.query("posts").order("desc").collect();
                         const postsWithUrls = await Promise.all(posts.map(async(post)=>{
                                 return {
                                         ...post,

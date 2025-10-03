@@ -26,7 +26,7 @@ const Profile = ()=> {
 
                 })();
         }, []);
-        const { user: userData,loading, error } = useGetUserById(user?.userId as Id<"users">);
+        const { user: userData, } = useGetUserById(user?.userId as Id<"users">);
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
       <div className="max-w-5xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
@@ -42,7 +42,7 @@ const Profile = ()=> {
           <div className="relative px-6 pb-6">
             <div className="flex flex-col sm:flex-row sm:items-end sm:space-x-6">
               <div className="relative -mt-20 mb-4 sm:mb-0">
-                <div className="w-32 h-32 rounded-2xl border-4 border-white shadow-xl overflow-hidden bg-gradient-to-br from-blue-400 to-cyan-600">
+                <div className="w-48 h-48 rounded-full border-4 border-blue shadow-xl overflow-hidden bg-gradient-to-br from-blue-400 to-cyan-600">
                   <img
                     src={userData?.profilePicture || '/default-profile.png'}
                     alt="Profile"

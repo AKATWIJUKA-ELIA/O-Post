@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { decrypt } from "@/lib/sessions"
 import { cookies } from 'next/headers'
+import { redirect } from 'next/dist/server/api-utils'
 
 const isProtected = [
         '/profile',
@@ -27,7 +28,7 @@ const Middleware = async (req: NextRequest) => {
         if(
                 isRoleProtected && ( session?.role !== "admin")){
                         return NextResponse.redirect(new URL('/unauthorized', req.url));
-                }
+                }                  
 
         if (isPublicRoute && session?.userId && req.nextUrl.pathname != '/') {
                 return NextResponse.redirect(new URL('/', req.nextUrl))
