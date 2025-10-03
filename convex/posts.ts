@@ -1,11 +1,17 @@
 import {  v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+export const generateUploadUrl = mutation(async (ctx)=>{
+      return await ctx.storage.generateUploadUrl()
+})
 
 export const CreatePost = mutation({
         args:{
                 authorId: v.id("users"),
                 title: v.string(),
                 content: v.string(),
+                excerpt: v.string(),
+                category: v.string(),
+                postImage: v.string(),
                 upvotes: v.number(),
                 downvotes: v.number(),
         },handler:async(ctx,args)=>{
@@ -40,7 +46,7 @@ export const CreatePost = mutation({
         })
         export const GetAllPosts = query({
                 handler:async(ctx)=>{
-                        const posts = await ctx.db.query("posts").collect();
+                        const posts = await ctx.db.query("posts").order("desc").collect();
                         const postsWithUrls = await Promise.all(posts.map(async(post)=>{
                                 return {
                                         ...post,

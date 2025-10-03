@@ -1,12 +1,14 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { Libre_Baskerville, Inter } from "next/font/google"
-import { Analytics } from "@vercel/analytics/next"
+// import { Analytics } from "@vercel/analytics/next"
+import ClientProviders from "./Providers"
 import { Suspense } from "react"
 import "./globals.css"
 import "./styles.css"
-import { Footer } from "@/src/components/footer"
-import { Header } from "@/src/components/header"
+import ConditionalFooter  from "@/components/ConditionalFooter/page"
+import { Header } from "@/components/header"
+import MessagePop from "@/components/MessagePop/page"
 
 const libreBaskerville = Libre_Baskerville({
   weight: ["400", "700"],
@@ -22,9 +24,9 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "The Chronicle - Professional News Platform",
+  title: "The O-Post - Professional News Platform",
   description: "Stay informed with trusted journalism and in-depth reporting",
-  generator: "v0.app",
+//   generator: "",
 }
 
 export default function RootLayout({
@@ -35,10 +37,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`font-sans ${inter.variable} ${libreBaskerville.variable}`}>
+        <ClientProviders>
         <Header />
+        <MessagePop />
         <Suspense fallback={null}>{children}</Suspense>
-        <Analytics />
-        <Footer />
+        {/* <Analytics /> */}
+        <ConditionalFooter />
+        </ClientProviders>
       </body>
     </html>
   )
