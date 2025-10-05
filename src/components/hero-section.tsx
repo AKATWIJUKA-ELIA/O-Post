@@ -5,39 +5,29 @@ import Link from "next/link"
 import useGetAllPosts from "@/hooks/useGetAllPosts"
 import Image from "next/image"
 import { formatDate } from "@/lib/utils"
-const news = [
-        {
-        title: "Global Climate Summit Reaches Historic Agreement",
-        description: "World leaders commit to unprecedented carbon reduction targets in landmark deal that could reshape the future of environmental policy.",
-        author: "Sarah Mitchell",
-        date: "March 15, 2025",
-        image: "/climate-summit-leaders.png"
-        },
-        {
-        title: "Global Climate Summit Reaches Historic Agreement",
-        description: "World leaders commit to unprecedented carbon reduction targets in landmark deal that could reshape the future of environmental policy.",
-        author: "Sarah Mitchell",
-        date: "March 15, 2025",
-        image: "/climate-summit-leaders.png"
-        },
-        {
-        title: "Global Climate Summit Reaches Historic Agreement",
-        description: "World leaders commit to unprecedented carbon reduction targets in landmark deal that could reshape the future of environmental policy.",
-        author: "Sarah Mitchell",
-        date: "March 15, 2025",
-        image: "/climate-summit-leaders.png"
-        },
-        {
-        title: "Global Climate Summit Reaches Historic Agreement",
-        description: "World leaders commit to unprecedented carbon reduction targets in landmark deal that could reshape the future of environmental policy.",
-        author: "Sarah Mitchell",
-        date: "March 15, 2025",
-        image: "/climate-summit-leaders.png"
-        }
-]
+import Loader from "./Loader/loader"
+import { getUserById } from "@/lib/convex"
+import { useEffect, useState } from "react"
+import { User } from "@/lib/types"
+import { Id } from "../../convex/_generated/dataModel"
+
+
 export function HeroSection() {
-        const { data:posts, loading, } = useGetAllPosts();
+        const { data:posts, } = useGetAllPosts();
         const mainPost = posts && posts.length > 0 ? posts[0] : null;
+        const [Author, setAuthor] = useState<User|null>(null);
+
+        useEffect(()=>{
+                async function fetchAuthor(){
+                        const response = await getUserById(mainPost?.authorId as Id<"users">);
+                        setAuthor(response.user);
+                }
+                fetchAuthor();
+          },[mainPost])
+
+        if(!posts) return <div className=" items-center h-screen" >
+                <Loader/>
+        </div>
   return (
     <section className="relative bg-neutral-200 text-accent-foreground">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
@@ -60,7 +50,7 @@ export function HeroSection() {
               {mainPost?.excerpt}
             </p>
             <div className="flex items-center space-x-4 text-sm text-foreground/70">
-              <span>By Sarah Mitchell</span>
+              <span>By {Author?.username}</span>
               <span>•</span>
               <time>{formatDate(mainPost?._creationTime??0)}</time>
             </div>

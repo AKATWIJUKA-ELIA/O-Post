@@ -49,4 +49,9 @@ export default defineSchema({
         subscriptions: defineTable({
                 email: v.string(),
         }).index("by_email", ["email"]),
+        interactions: defineTable({
+                userId: v.id("users"),
+                postId: v.id("posts"),
+                type: v.union(v.literal("view"), v.literal("upvote"),v.literal("downvote"), v.literal("share"), v.literal("comment")),
+        }).index("by_user", ["userId"])
 })

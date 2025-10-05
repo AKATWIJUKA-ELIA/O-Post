@@ -13,6 +13,9 @@ const loader = () => {
                                             secondaryColor="#FFD700"
                                             ariaLabel="oval-loading"
                                             />
+                                            <div className=" flex ml-2 text-lg font-medium text-gray-700">
+                                                - Post
+                                            </div>
                             </div>
                                     </div>
   )
