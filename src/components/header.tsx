@@ -79,7 +79,7 @@ useEffect(()=>{(async()=>{
       >
         <div className="flex px-2 sm:px-4">
           <div className="flex h-16 sm:h-20 lg:h-24 items-center lg:justify-between space-x-2 sm:space-x-4 mx-auto w-full max-w-7xl">
-            <div className="flex h-full bg-white/50">
+            <div className="flex h-full bg-white">
               <a href="/" className="flex items-center space-x-2">
                 <img src="/logo.png" alt="Logo" className="h-10 w-32 sm:h-12 sm:w-40 lg:h-14 lg:w-48" />
               </a>
