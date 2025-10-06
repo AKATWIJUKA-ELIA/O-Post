@@ -36,7 +36,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`font-sans ${inter.variable} ${libreBaskerville.variable} overflow-x-hidden lg:w-max bg-background text-foreground antialiased`}>
+      <body className={`font-sans ${inter.variable} ${libreBaskerville.variable} overflow-x-hidden  text-foreground antialiased`}>
         <ClientProviders>
         <Header />
         <MessagePop />

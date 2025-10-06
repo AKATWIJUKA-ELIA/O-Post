@@ -39,7 +39,7 @@ export function HeroSection() {
               Breaking News
             </Badge>
             <Image src={mainPost?.postImage??""} width={500} height={300} alt="Climate Summit" className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300" />
-            <h1 className="absolute z-30 bottom-6 bg-black/50 font-serif text-2xl md:text-5xl lg:text-6xl font-bold leading-tight text-balance group-hover:bottom-8 transition-all duration-300">
+            <h1 className="absolute z-30 bottom-6 bg-black/50 font-serif text-2xl md:text-3xl lg:text-3xl font-bold leading-tight text-balance group-hover:bottom-8 transition-all duration-300">
              {mainPost?.title}
             </h1>
 
@@ -67,11 +67,11 @@ export function HeroSection() {
           
 
           {/* Right content */}
-          <div className="grid md:grid-cols-2 gap-4 p-3 bg-accent/30" >
+          <div className="grid md:grid-cols-2 gap-4 p-3 border rounded-2xl bg-accent/3" >
 {posts?.map((item, idx) => (
-  <Link href={`/news/${item._id}`} key={idx} className="flex relative rounded-lg overflow-hidden group ">
+  <Link href={`/news/${item._id}`} key={idx} className="flex relative h-50 rounded-lg overflow-hidden group ">
     <img src={item.postImage||""} alt={item.title} className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300" />
-    <h1 className="absolute z-30 bottom-1 group-hover:bottom-3 transition-all duration-300 p-2 bg-black/50 font-serif text-2xl font-bold leading-tight text-balance">
+    <h1 className="absolute z-30 bottom-1 group-hover:bottom-3 transition-all duration-300 p-2 bg-black/50 font-serif text-xl font-bold leading-tight text-balance">
       {item.title}
     </h1>
   </Link >

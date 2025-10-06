@@ -5,7 +5,7 @@ import Image from "next/image"
 
 const Signin = () => {
   return (
-   <div className="flex flex-col min-h-svh px-4 mt-[2%] ">
+   <div className="flex flex-col min-h-svh px-4 mt-[2%]  ">
               <div className="flex mt-6 ">
         <Image
           src="/logo.png"
