@@ -56,3 +56,101 @@ export const CreatePost = mutation({
                         return postsWithUrls;
                 }
         })
+        export const LikePost = mutation({
+                args:{
+                        postId:v.id("posts"),
+                        userId:v.id("users"),
+                },handler:async(ctx,args)=>{
+                        const post = await ctx.db.get(args.postId);
+                        if(!post){
+                                return {success:false,message:"Post not found",status:404,post:null};
+                        }
+                        const existingInteraction = await ctx.db.query("interactions")
+                        .filter((q) => q.and(
+                                q.eq(q.field("userId"), args.userId),
+                                q.eq(q.field("postId"), args.postId),
+                                q.or(q.eq(q.field("type"), "downvote"),
+                                q.eq(q.field("type"), "upvote"))
+                        ))
+                        .unique();
+                        if (!existingInteraction) {
+                                 const updatedPost = await ctx.db.patch(args.postId,{
+                                upvotes: post.upvotes+1
+                                
+                        })
+                        await ctx.db.insert("interactions",{
+                                        userId: args.userId,
+                                        postId: args.postId,
+                                        type: "upvote",
+                                })
+                        return {success:true,message:"Post updated successfully",status:200,post:updatedPost};
+                                
+                        }
+                        return { success: false, message: "User has already liked this post", status: 400, post: null };
+                       
+                }
+        })
+
+                export const DisLikePost = mutation({
+                args:{
+                        postId:v.id("posts"),
+                        userId:v.id("users"),
+                },handler:async(ctx,args)=>{
+                        const post = await ctx.db.get(args.postId);
+                        if(!post){
+                                return {success:false,message:"Post not found",status:404,post:null};
+                        }
+                        const existingInteraction = await ctx.db.query("interactions")
+                        .filter((q) => q.and(
+                                q.eq(q.field("userId"), args.userId),
+                                q.eq(q.field("postId"), args.postId),
+                                q.or(q.eq(q.field("type"), "downvote"),
+                                q.eq(q.field("type"), "upvote"))
+                        ))
+                        .unique();
+                        if (existingInteraction) {
+                                return { success: false, message: "User has already disliked this post", status: 400, post: null };
+                        }
+                        const updatedPost = await ctx.db.patch(args.postId,{
+                                downvotes: post.downvotes+1
+                        })
+                        await ctx.db.insert("interactions",{
+                                        userId: args.userId,
+                                        postId: args.postId,
+                                        type: "downvote",
+                                })
+                        return {success:true,message:"Post updated successfully",status:200,post:updatedPost};
+                }
+        })
+
+        export const CommentOnPost = mutation({
+                args:{
+                        postId:v.id("posts"),
+                        commentorId:v.id("users"),
+                        content:v.string(),
+                },handler:async(ctx,args)=>{
+                        try{
+                        const comment = await ctx.db.insert("comments",{
+                                ...args,
+                                upvotes:0,
+                                downvotes:0,
+                                updatedAt:Date.now(),
+                        }) 
+                        return {success:true,message:"Comment added successfully",status:200,comment:comment};
+                }catch{
+                        return {success:false,message:"Error adding comment",status:500,comment:null};
+                }}}) 
+
+                export const GetPostsByCategory = query({
+                        args:{category:v.string()},
+                        handler:async(ctx,args)=>{
+                                const posts = await ctx.db.query("posts").filter((q)=>q.eq(q.field("category"),args.category)).order("desc").collect();
+                                const postsWithUrls = await Promise.all(posts.map(async(post)=>{
+                                        return {
+                                                ...post,
+                                                postImage: post.postImage ? await ctx.storage.getUrl(post.postImage) : "",
+                                        }
+                                }))
+                                return postsWithUrls;
+                        }       
+                })

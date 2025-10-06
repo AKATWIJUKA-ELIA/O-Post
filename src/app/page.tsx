@@ -8,9 +8,9 @@ import { Newsletter } from "@/components/newsletter"
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="flex min-h-screen overflow-x-hidden w-full mx-auto bg-background">
       
-      <main>
+      <main className="">
         <HeroSection />
         <FeaturedStories />
         <CategoryGrid />

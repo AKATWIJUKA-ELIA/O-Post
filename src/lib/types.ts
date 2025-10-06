@@ -55,3 +55,15 @@ export interface UserProfile {
         isVerified: boolean;
         expiresAt:Date
 }
+export type Comment = {
+        _id: Id<"comments">
+        postId: Id<"posts">
+        commentorId: Id<"users">
+        content: string
+        upvotes?: number
+        downvotes?: number
+        updatedAt?: number
+}
+export type CommentWithCommentor = Comment & {
+        commentor: User|null
+}

@@ -68,17 +68,18 @@ const LoginForm=({
         // }
 
   return (
-    <form onSubmit={HandleSubmit} className={cn("flex flex-col gap-6", className)} {...props}>
-      <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="text-2xl font-bold"><span className="text-gold" >Welcome</span> Back </h1>
-        <p className="text-balance text-sm text-muted-foreground">
+    <form onSubmit={HandleSubmit} className={cn(" gap-6", className)} {...props}>
+      <div className="flex flex-col w-full items-center gap-2 text-center ">
+        <h1 className="flex text-2xl font-bold"><span className="text-gold" >Welcome</span> Back </h1>
+        <p className="flex text-balance text-sm text-muted-foreground">
           Enter your email below to login to your account
         </p>
         {SubmittingError && SubmittingError.length>0 && <p className="text-balance text-sm text-red-500">
           {SubmittingError}
         </p>}
       </div>
-      <div className="grid gap-6 border px-10 py-4 rounded-2xl shadow-lg dark:bg-black bg-slate-100 ">
+
+      <div className="grid gap-6 border md:px-10 py-4 rounded-2xl shadow-lg dark:bg-black bg-slate-100 ">
         <div className="grid gap-2">
           <Label htmlFor="email">Email</Label>
           <Input id="email"
@@ -125,7 +126,8 @@ const LoginForm=({
         </Button>
       
       </div>
-      <div className="text-center text-sm">
+
+      <div className="flex text-center text-sm">
         Don&apos;t have an account?{" "}
         <Link href="/sign-up" className="underline underline-offset-4">
           Sign up

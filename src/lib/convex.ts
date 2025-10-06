@@ -2,6 +2,7 @@ import {User,UpstreamUser} from "@/lib/types"
 "use server";
 import {ConvexClient} from "convex/browser";
 import { api } from "../../convex/_generated/api";
+import { Id } from "../../convex/_generated/dataModel";
 
 if (!process.env.NEXT_PUBLIC_CONVEX_URL) {
   throw new Error("CONVEX_URL is not defined");
@@ -30,4 +31,19 @@ export const getUserByToken = async (token: string) => {
         console.error("Error fetching user by token:", error);
         return { success: false, message: "Internal Server Error", status: 500 };
     }
+}
+export async function getUserById(id:  Id<"users">) {
+  if (!id) return { user: null, loading: false, error: "No ID provided" };
+  try {
+    const user = await convex.query(api.users.GetUserById, { id });
+    return {
+      user,
+    };
+  } catch (e) {
+    return {
+      user: null,
+      loading: false,
+      error: e instanceof Error ? e.message : "Unknown error",
+    };
+  }
 }
