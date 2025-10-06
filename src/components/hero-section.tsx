@@ -29,13 +29,13 @@ export function HeroSection() {
                 <Loader/>
         </div>
   return (
-    <section className="relative bg-neutral-200 text-accent-foreground">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+    <div className="flex relative bg-neutral-200 text-accent-foreground">
+      <div className="container  px-4 sm:px-6 lg:px-8 py-16 md:py-24">
         <div className="grid lg:grid-cols-2 gap-12 ">
           {/* Left Content */}
           <div className="flex flex-col p-2 group  " >
                 <div className="relative  rounded-lg overflow-hidden">
-                <Badge variant="secondary" className=" absolute z-50 md:z-30 top-4 left-4 group-hover:top-4 group-hover:left-4 bg-red text-white font-bold  px-3 py-1 rounded-lg transition-all">
+                <Badge variant="secondary" className=" absolute z-30  top-4 left-4 group-hover:top-4 group-hover:left-4 bg-red text-white font-bold  px-3 py-1 rounded-lg transition-all">
               Breaking News
             </Badge>
             <Image src={mainPost?.postImage??""} width={500} height={300} alt="Climate Summit" className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300" />
@@ -79,6 +79,6 @@ export function HeroSection() {
           </div>
         </div>
       </div>
-    </section>
+    </div>
   )
 }
