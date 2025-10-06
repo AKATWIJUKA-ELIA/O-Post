@@ -36,7 +36,7 @@ export function HeroSection() {
           <div className="flex flex-col p-2 group  " >
                 <div className="relative  rounded-lg overflow-hidden">
                 <Badge variant="secondary" className=" absolute z-30  top-4 left-4 group-hover:top-4 group-hover:left-4 bg-red text-white font-bold  px-3 py-1 rounded-lg transition-all">
-              Breaking News
+              {mainPost?.category}
             </Badge>
             <Image src={mainPost?.postImage??""} width={500} height={300} alt="Climate Summit" className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300" />
             <h1 className="absolute z-30 bottom-6 bg-black/50 font-serif text-2xl md:text-3xl lg:text-3xl font-bold leading-tight text-balance group-hover:bottom-8 transition-all duration-300">
