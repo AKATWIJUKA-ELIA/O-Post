@@ -5,31 +5,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import Link from "next/link"
 import { use } from "react"
 import useGetAllPosts from "@/hooks/useGetAllPosts"
+import useGetPostById from "@/hooks/useGetPostById"
+import { Id } from "../../../../../convex/_generated/dataModel"
+import { formatDate } from "@/lib/utils"
 
-// Mock data - replace with actual data fetching
-const article = {
-  id: "1",
-  title: "The Future of Artificial Intelligence in Modern Journalism",
-  subtitle: "How AI is transforming newsrooms and reshaping the way we consume information",
-  author: {
-    name: "Sarah Mitchell",
-    role: "Senior Technology Reporter",
-    avatar: "/professional-journalist.png",
-  },
-  publishedDate: "March 15, 2025",
-  readTime: "8 min read",
-  category: "Technology",
-  source: "Tech Insights",
-  image: "/ai-technology-newsroom.jpg",
-  content: [
-    "Artificial intelligence is no longer a distant concept confined to science fiction. It has become an integral part of our daily lives, transforming industries and reshaping the way we work, communicate, and consume information. In the realm of journalism, AI is proving to be both a powerful tool and a subject of intense debate.",
-    "Newsrooms around the world are increasingly adopting AI-powered tools to streamline their workflows, from automated content generation to sophisticated data analysis. These technologies are enabling journalists to process vast amounts of information more efficiently, uncover hidden patterns in data, and deliver personalized content to their audiences.",
-    "However, the integration of AI in journalism also raises important questions about authenticity, bias, and the future role of human journalists. As algorithms become more sophisticated in generating and curating content, the industry must grapple with maintaining editorial integrity while embracing technological innovation.",
-    "Major news organizations have already begun experimenting with AI-generated articles for routine reporting tasks such as financial updates, sports scores, and weather forecasts. This automation frees up human journalists to focus on more complex investigative work and in-depth analysis that requires critical thinking and emotional intelligence.",
-    "The challenge lies in finding the right balance between efficiency and quality, between automation and human touch. While AI can process information at unprecedented speeds, it lacks the nuanced understanding of context, ethics, and human experience that seasoned journalists bring to their work.",
-    "Looking ahead, the most successful newsrooms will likely be those that view AI not as a replacement for human journalists, but as a powerful complement to their skills. By leveraging AI for data processing and routine tasks, journalists can dedicate more time to what they do best: telling compelling stories, holding power to account, and serving their communities with thoughtful, well-researched journalism.",
-  ],
-}
+
 
 const relatedArticles = [
   {
@@ -59,7 +39,7 @@ interface PageProps {
       }
 export default function NewsArticlePage({ params }: PageProps) {
         const { id } = use(params);
-          const { data: relatedProducts } = useGetAllPosts();
+        const { data: article } = useGetPostById(id as Id<"posts">);
 
   return (
     <div className="min-h-screen bg-background">
@@ -89,54 +69,54 @@ export default function NewsArticlePage({ params }: PageProps) {
       <article className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
         {/* Category & Metadata */}
         <div className="mb-6 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-          <span className="rounded-full bg-primary/10 px-3 py-1 font-medium text-primary">{article.category}</span>
-          <span>{article.publishedDate}</span>
+          {/* <span className="rounded-full bg-primary/10 px-3 py-1 font-medium text-primary">{article.category}</span> */}
+          <span>{formatDate(article?._creationTime||0)}</span>
           <span>•</span>
-          <span>{article.readTime}</span>
+          {/* <span>{article.readTime}</span> */}
           <span>•</span>
-          <span>{article.source}</span>
+          {/* <span>{article.source}</span> */}
         </div>
 
         {/* Title */}
         <h1 className="mb-4 text-balance font-serif text-4xl font-bold leading-tight tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-          {article.title}
+          {article?.title}
         </h1>
 
         {/* Subtitle */}
-        <p className="mb-8 text-pretty text-xl leading-relaxed text-muted-foreground sm:text-2xl">{article.subtitle}</p>
+        <p className="mb-8 text-pretty text-xl leading-relaxed text-muted-foreground sm:text-2xl">{article?.excerpt}</p>
 
         {/* Author Info */}
         <div className="mb-8 flex items-center gap-4">
           <Avatar className="h-12 w-12">
-            <AvatarImage src={article.author.avatar || "/placeholder.svg"} alt={article.author.name} />
-            <AvatarFallback>
+            <AvatarImage src={article?.postImage || "/placeholder.svg"} alt={article?.title} />
+            {/* <AvatarFallback>
               {article.author.name
                 .split(" ")
                 .map((n) => n[0])
                 .join("")}
-            </AvatarFallback>
+            </AvatarFallback> */}
           </Avatar>
           <div>
-            <p className="font-semibold text-foreground">{article.author.name}</p>
-            <p className="text-sm text-muted-foreground">{article.author.role}</p>
+            {/* <p className="font-semibold text-foreground">{article.author.name}</p>
+            <p className="text-sm text-muted-foreground">{article.author.role}</p> */}
           </div>
         </div>
 
         <Separator className="mb-8" />
 
         {/* Featured Image */}
-        <div className="mb-12 overflow-hidden rounded-lg">
+        {/* <div className="mb-12 overflow-hidden rounded-lg">
           <img src={article.image || "/placeholder.svg"} alt={article.title} className="h-auto w-full object-cover" />
-        </div>
+        </div> */}
 
         {/* Article Body */}
-        <div className="prose prose-lg max-w-none">
+        {/* <div className="prose prose-lg max-w-none">
           {article.content.map((paragraph, index) => (
             <p key={index} className="mb-6 text-pretty leading-relaxed text-foreground">
               {paragraph}
             </p>
           ))}
-        </div>
+        </div> */}
 
         <Separator className="my-12" />
 
@@ -167,17 +147,17 @@ export default function NewsArticlePage({ params }: PageProps) {
         <div className="rounded-lg border border-border bg-card p-6">
           <div className="flex gap-4">
             <Avatar className="h-16 w-16">
-              <AvatarImage src={article.author.avatar || "/placeholder.svg"} alt={article.author.name} />
-              <AvatarFallback>
+              <AvatarImage src={article?.postImage || "/placeholder.svg"} alt={article?.title} />
+              {/* <AvatarFallback>
                 {article.author.name
                   .split(" ")
                   .map((n) => n[0])
                   .join("")}
-              </AvatarFallback>
+              </AvatarFallback> */}
             </Avatar>
             <div>
-              <h4 className="mb-1 font-semibold text-foreground">{article.author.name}</h4>
-              <p className="mb-2 text-sm text-muted-foreground">{article.author.role}</p>
+              {/* <h4 className="mb-1 font-semibold text-foreground">{article.author.name}</h4>
+              <p className="mb-2 text-sm text-muted-foreground">{article.author.role}</p> */}
               <p className="text-sm leading-relaxed text-foreground">
                 Sarah is an award-winning technology journalist with over a decade of experience covering the
                 intersection of technology and society. She specializes in AI, digital ethics, and the future of media.
