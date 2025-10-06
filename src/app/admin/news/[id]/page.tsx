@@ -4,7 +4,6 @@ import { Separator } from "@/components/ui/separator"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import Link from "next/link"
 import { use } from "react"
-import useGetAllPosts from "@/hooks/useGetAllPosts"
 import useGetPostById from "@/hooks/useGetPostById"
 import { Id } from "../../../../../convex/_generated/dataModel"
 import { formatDate } from "@/lib/utils"
@@ -35,10 +34,12 @@ const relatedArticles = [
   },
 ]
 interface PageProps {
-        params: Promise<{ id: string }>
-      }
+  params: {
+    id: string;
+  };
+}
 export default function NewsArticlePage({ params }: PageProps) {
-        const { id } = use(params);
+        const { id } = params;
         const { data: article } = useGetPostById(id as Id<"posts">);
 
   return (
