@@ -152,7 +152,13 @@ export default function NewsArticlePage({ params }: PageProps) {
         {/* Article Body */}
         <div className="prose prose-lg max-w-none">
             <p  className="mb-6 text-pretty leading-relaxed text-foreground">
-              {article?.content}
+              {article?.content.split("\n").map((para, idx) => (
+                <span key={idx}>
+                  {para}
+                  <br />
+                  <br />
+                </span>
+              ))}
             </p>
         </div>
 
