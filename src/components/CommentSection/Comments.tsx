@@ -12,7 +12,7 @@ import { Id } from "../../../convex/_generated/dataModel"
 import useGetPostComments from "@/hooks/useGetPostComments"
 import { useNotification } from "@/app/NotificationContext"
 import {getUserById} from "@/lib/convex"
-import { User } from "@/lib/types"
+import { User,CommentWithCommentor } from "@/lib/types"
 import { formatDate } from "@/lib/utils"
 
 
@@ -28,6 +28,22 @@ export function CommentSection({ postId,userId }: CommentSectionProps) {
   const { commentOnPost } = useInteractWithPost();
         const [Author, setAuthor] = useState<User|null>(null);
         const {data:comments} = useGetPostComments(postId as Id<"posts">);
+        const [commentsWithCommentors, setCommentsWithCommentors] = useState<CommentWithCommentor[]>([]);
+        useEffect(() => {
+  const fetchComments = async () => {
+    const enrichedComments = await Promise.all(
+      comments?.map(async (comment) => {
+        const res = await getUserById(comment.commentorId);
+        return {
+          ...comment,
+          commentor: res.user,
+        };
+      }) || []
+    );
+    setCommentsWithCommentors(enrichedComments);
+  };
+  fetchComments();
+}, [comments]);
         const { setNotification } = useNotification();
 
 useEffect(()=>{
@@ -62,7 +78,7 @@ useEffect(()=>{
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
-      <h2 className="mb-8 font-serif text-3xl font-bold text-foreground">Comments ({comments?.length})</h2>
+      <h2 className="mb-8 font-serif text-3xl font-bold text-foreground">Comments ({commentsWithCommentors?.length})</h2>
 
       {/* Comment Form */}
       <div className="mb-12 rounded-lg border border-border bg-card p-6">
@@ -93,13 +109,13 @@ useEffect(()=>{
 
       {/* Comments List */}
       <div className="space-y-6">
-        {comments?.map((comment, index) => (
+        {commentsWithCommentors?.map((comment, index) => (
           <div key={comment._id}>
             <div className="flex gap-4">
               <Avatar className="h-10 w-10">
-                <AvatarImage src={Author?.profilePicture || "/placeholder.svg"} alt={Author?.username} />
+                <AvatarImage src={comment.commentor?.profilePicture || "/placeholder.svg"} alt={Author?.username} />
                 <AvatarFallback>
-                  {Author?.username
+                  {comment.commentor?.username.slice(0,2)
                     .split(" ")
                     .map((n) => n[0])
                     .join("")}
@@ -107,9 +123,9 @@ useEffect(()=>{
               </Avatar>
               <div className="flex-1">
                 <div className="mb-2 flex items-center gap-2">
-                  <span className="font-semibold text-foreground">{Author?.username}</span>
+                  <span className="font-semibold text-foreground">{comment.commentor?.username}</span>
                   <span className="text-sm text-muted-foreground">•</span>
-                  <span className="text-sm text-muted-foreground">{formatDate(comment._creationTime)}</span>
+                  <span className="text-sm text-muted-foreground">{formatDate(comment.commentor?._creationTime||0)}</span>
                 </div>
                 <p className="mb-3 text-pretty leading-relaxed text-foreground">{comment.content}</p>
                 <div className="flex items-center gap-4">
@@ -122,14 +138,14 @@ useEffect(()=>{
                     <Heart className={`h-4 w-4 ${comment.isLiked ? "fill-red-500 text-red-500" : ""}`} />
                     <span className={comment.isLiked ? "text-red-500" : ""}>{comment.likes}</span>
                   </Button> */}
-                  <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground hover:text-foreground">
+                  {/* <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground hover:text-foreground">
                     <MessageCircle className="h-4 w-4" />
                     Reply
-                  </Button>
+                  </Button> */}
                 </div>
               </div>
             </div>
-            {index < comments.length - 1 && <Separator className="mt-6" />}
+            {index < commentsWithCommentors.length - 1 && <Separator className="mt-6" />}
           </div>
         ))}
       </div>
