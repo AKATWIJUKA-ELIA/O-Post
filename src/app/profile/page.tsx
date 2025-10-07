@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Mail,  Calendar, Bookmark, MessageSquare, Settings } from "lucide-react"
+import { Mail,  Calendar, Bookmark, MessageSquare, Settings,LayoutDashboardIcon } from "lucide-react"
 import Link from "next/link"
 import { useUser } from "@/hooks/useUser"
 import type { Id } from "../../../convex/_generated/dataModel"
@@ -133,15 +133,19 @@ export default function ProfilePage() {
                     </div>
                   </div>
                 </div>
-                <Link href="/profile/settings">
-                  <Button variant="outline" className="w-full sm:w-auto gap-2 bg-transparent">
-                    <Settings className="h-4 w-4" />
-                    Edit Profile
+                {user?.role==="admin"?(
+                        <Link href="/admin" className="hover:cursor-pointer">
+                  <Button variant="outline" className="w-full sm:w-auto gap-2 hover:cursor-pointer rounded-2xl bg-transparent">
+                    <LayoutDashboardIcon className="h-4 w-4" />
+                    DashBoard
                   </Button>
                 </Link>
+                ):(
+                <div className="w-full sm:w-auto" ></div>
+                )}
               </div>
               <p className="mt-4 sm:mt-6 text-base sm:text-lg text-foreground leading-relaxed max-w-3xl">
-                {userData.bio}
+                {/* {userData.bio} */}
               </p>
             </div>
           </div>
