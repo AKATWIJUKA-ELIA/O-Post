@@ -91,7 +91,7 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer"  onClick={()=>logout()} >
+            <DropdownMenuItem className="cursor-pointer"  onClick={()=>logout.LogOut()} >
               <LogOutIcon />
               Log out
             </DropdownMenuItem>

@@ -28,7 +28,37 @@ export const CreatePost = mutation({
                 
         }
         })
-
+      export const UpdatePost = mutation({
+        args:{
+                post: v.object({
+                        _id: v.id("posts"),
+                        authorId: v.id("users"),
+                        title: v.string(),
+                        content: v.string(),
+                        excerpt: v.string(),
+                        category: v.string(),
+                        postImage: v.optional(v.string()),
+                    }),
+          },
+        handler: async (ctx, args) => {
+                const post = await ctx.db.get(args.post._id);
+              if(!post){
+                return { success: false, message: "Post not found", status: 404, post: null };
+              }
+              if(args.post.postImage?.length===0){
+                 await ctx.db.patch(args.post._id, {
+                        title: args.post.title,
+                        authorId: args.post.authorId,
+                        content: args.post.content,
+                        category: args.post.category,
+                        excerpt: args.post.excerpt,
+                 });
+                 return { success: true, message: "Post updated successfully", status: 200, post: args.post };
+              }
+               await ctx.db.patch(args.post._id, args.post);
+                 return { success: true, message: "Post updated successfully", status: 200, post: args.post };
+              
+        }})
         
  export const GetPostById = query({
                 args:{postId:v.id("posts")},

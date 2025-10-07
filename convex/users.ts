@@ -73,6 +73,19 @@ export const GetUserByEmail = query({
                 }
                 
         })
+export const GetUserByEmailAction = action({
+        args: { email: v.string() },
+        handler: async (ctx, args): Promise<Response> => {
+    // Call the registered query using ctx.runQuery
+    const customer = await ctx.runQuery(api.users.GetUserByEmail, { email: args.email });
+
+    if (!customer.user) {
+      return { success: false, status: 404, message: "Account not Found, please sign-Up first !", user: null };
+    }
+
+    return { success: true, status: 200, message: "Success !", user: customer.user };
+  },
+});
 export const UpdateUser = mutation({
          args:{User:v.object({
                 _id: v.id("users"),
@@ -87,6 +100,7 @@ export const UpdateUser = mutation({
                 reset_token_expires:v.number(),
                 updatedAt: v.number(),
                 lastLogin: v.optional(v.number()),
+                 _creationTime:v.optional(v.number()),
          })},handler:async(ctx,args)=>{
               if(args.User){
               const NewUser = await ctx.db.patch(args.User._id, {
@@ -99,7 +113,7 @@ export const UpdateUser = mutation({
               
         }})
 
-        export const GetUserByToken = query({
+export const GetUserByToken = query({
                 args:{token:v.string()},
                 handler:async(ctx,args)=>{
                         const customer = await ctx.db.query("users")
@@ -115,6 +129,19 @@ export const UpdateUser = mutation({
                 }
                 
         })
+export const GetUserByTokenAction = action({
+        args: { token: v.string() },
+        handler: async (ctx, args): Promise<Response> => {
+    // Call the registered query using ctx.runQuery
+    const customer = await ctx.runQuery(api.users.GetUserByToken, { token: args.token });
+
+    if (!customer.user) {
+      return { success: false, status: 404, message: "Token is Invalid", user: null };
+    }
+
+    return { success: true, status: 200, message: "Success !", user: customer.user };
+  },
+});
 
                 export const AuthenticateUser = action({
                 args:{email:v.string(), password:v.string()},
