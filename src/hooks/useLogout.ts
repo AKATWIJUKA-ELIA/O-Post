@@ -29,8 +29,13 @@ const useLogout = () => {
                 }
         }
         
-  return  {
-    LogOut
+  const logoutAndClearUser = async () => {
+    await dispatch(DeleteUser());
+    return LogOut();
+  };
+
+  return {
+    LogOut: logoutAndClearUser
   };
 };
 
