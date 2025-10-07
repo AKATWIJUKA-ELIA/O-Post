@@ -10,7 +10,7 @@ export function Footer() {
           <div className="col-span-2 md:col-span-1">
             <h3 className="font-serif text-5xl font-bold mb-4">The O-Post</h3>
             <p className="text-sm text-primary-foreground/80 leading-relaxed">
-              Trusted journalism since 1985. Delivering truth and transparency to readers worldwide.
+              Trusted journalism since 2025. Delivering truth and transparency to readers worldwide.
             </p>
           </div>
 
@@ -19,22 +19,22 @@ export function Footer() {
             <h4 className="font-semibold mb-4">Sections</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="#" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors">
+                <a href="/category/world" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors">
                   World
                 </a>
               </li>
               <li>
-                <a href="#" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors">
+                <a href="/category/politics" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors">
                   Politics
                 </a>
               </li>
               <li>
-                <a href="#" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors">
+                <a href="/category/business" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors">
                   Business
                 </a>
               </li>
               <li>
-                <a href="#" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors">
+                <a href="/category/technology" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors">
                   Technology
                 </a>
               </li>
@@ -52,11 +52,6 @@ export function Footer() {
               </li>
               <li>
                 <a href="#" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors">
-                  Careers
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors">
                   Contact
                 </a>
               </li>
@@ -69,7 +64,7 @@ export function Footer() {
           </div>
 
           {/* Legal */}
-          <div>
+          {/* <div>
             <h4 className="font-semibold mb-4">Legal</h4>
             <ul className="space-y-2 text-sm">
               <li>
@@ -93,7 +88,7 @@ export function Footer() {
                 </a>
               </li>
             </ul>
-          </div>
+          </div> */}
         </div>
 
         {/* Social Links & Copyright */}

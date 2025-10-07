@@ -15,7 +15,6 @@ import { PostWithAuthor } from "@/lib/types"
 const PostList=() =>{
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
-  const [viewMode, setViewMode] = useState<"grid" | "table">("grid")
   const {data:posts} = useGetAllPosts();
   const [PostaWithAuthors, setPostsWithAuthors] = useState<PostWithAuthor[]>([]);
 

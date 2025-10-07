@@ -90,7 +90,7 @@ useEffect(()=>{(async()=>{
         } w-full border-b border-border bg-blue backdrop-blur-2xl`}
       >
         <div className="flex gap-4 px-2 sm:px-4">
-          <div className="flex  h-16 sm:h-20 lg:h-24 items-center lg:justify-between space-x-2 sm:space-x-4 mx-auto w-full max-w-8xl">
+          <div className="flex   h-16 sm:h-20 lg:h-24 items-center lg:justify-center space-x-2 sm:space-x-4 mx-auto w-full max-w-7xl">
             <div className="flex h-full bg-white">
               <a href="/" className="flex items-center space-x-2">
                 <img src="/logo.png" alt="Logo" className="h-10 w-32 sm:h-12 sm:w-40 lg:h-14 lg:w-48" />
@@ -133,13 +133,13 @@ useEffect(()=>{(async()=>{
                     <div className="flex mt-2 items-center gap-3" >
                         <Link href="/profile">
                           <Avatar className="h-10 w-10">
-                            <AvatarImage src="/abstract-geometric-shapes.png" alt="Your avatar" />
+                            <AvatarImage src="/abstract-geometric-shapes.png" alt="Your avatar" /> 
                             <AvatarFallback>
                               {Author?.username ? Author.username.charAt(0).toUpperCase() : "U"}
                             </AvatarFallback>
                           </Avatar>
                         </Link>
-                        <Button variant="outline" size="sm" className=" hidden lg:flex text-blue rounded-2xl border-white hover:bg-red hover:text-blue"
+                        <Button variant="outline" size="sm" className=" hidden lg:flex text-blue rounded-2xl hover:cursor-pointer  border-white hover:bg-red hover:text-blue"
                         onClick={() => handleLogout()}
                         >
                                 Log Out
