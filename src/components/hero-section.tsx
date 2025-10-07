@@ -10,6 +10,7 @@ import { getUserById } from "@/lib/convex"
 import { useEffect, useState } from "react"
 import { User } from "@/lib/types"
 import { Id } from "../../convex/_generated/dataModel"
+import {truncateString} from "@/lib/utils"
 
 
 export function HeroSection() {
@@ -47,7 +48,7 @@ export function HeroSection() {
 
           <div className="space-y-6">
             <p className="text-lg md:text-xl text-foreground/80 leading-relaxed">
-              {mainPost?.excerpt}
+              {truncateString(mainPost?.excerpt??"", 150)}
             </p>
             <div className="flex items-center space-x-4 text-sm text-foreground/70">
               <span>By {Author?.username}</span>
@@ -69,8 +70,11 @@ export function HeroSection() {
           {/* Right content */}
           <div className="grid md:grid-cols-2 gap-4 p-3 border rounded-2xl bg-accent/3" >
 {posts?.slice(0,4).map((item, idx) => (
-  <Link href={`/news/${item._id}`} key={idx} className="flex relative h-50 rounded-lg overflow-hidden group ">
-    <img src={item.postImage||""} alt={item.title} className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300" />
+  <Link href={`/news/${item._id}`} key={idx} className="flex relative h-75 rounded-lg overflow-hidden group ">
+    <Image src={item.postImage||""} alt={item.title} 
+                width={200}
+                height={50}
+    className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300" />
     <h1 className="absolute z-30 bottom-1 group-hover:bottom-3 transition-all duration-300 p-2 bg-black/50 font-serif text-xl font-bold leading-tight text-balance">
       {item.title}
     </h1>

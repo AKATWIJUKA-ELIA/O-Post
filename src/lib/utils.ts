@@ -26,7 +26,7 @@ export function currentYear(): number {
               
                 
       };
-      
+
        export const handleShare = (link: string,name:string) => {
         if (navigator.share) {
           navigator
@@ -42,3 +42,7 @@ export function currentYear(): number {
                 alert("Sharing not supported on this device. Try copying the link instead.");
         }
       };
+
+          export const truncateString = (text: string, maxLength: number): string => {
+                return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+        };
