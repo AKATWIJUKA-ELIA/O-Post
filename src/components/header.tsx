@@ -2,13 +2,16 @@
 
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Menu, X, Search, Signpost as SignOut } from "lucide-react"
+import { Menu, X, Search } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useUser } from "@/hooks/useUser"
 import type { Id } from "../../convex/_generated/dataModel"
-import type { UserProfile } from "@/lib/types"
+import type { User, UserProfile } from "@/lib/types"
 import useLogout from "@/hooks/useLogout"
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
+import { getUserById } from "@/lib/convex"
+import { LogOut as SignOut } from "lucide-react"
 
 const links: { name: string; href: string }[] = [
   { name: "World", href: "world" },
@@ -31,6 +34,7 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [sticky, setSticky] = useState(false)
   const [user, setUser] = useState<UserProfile | null>(null)
+        const [Author, setAuthor] = useState<User | null>(null);
 
 useEffect(()=>{(async()=>{
         const{success,session}=await useUser();
@@ -40,6 +44,14 @@ useEffect(()=>{(async()=>{
                         role:session.role as string,
                         isVerified:session.isVerified as boolean,
                         expiresAt:session.expiresAt as Date,});return;}setUser(null);})();},[]);
+
+                        useEffect(()=>{
+                                                async function fetchAuthor(){
+                                                        const response = await getUserById(user?.userId as Id<"users">);
+                                                        setAuthor(response.user);
+                                                }
+                                                fetchAuthor();
+                                          },[user?.userId])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -77,8 +89,8 @@ useEffect(()=>{(async()=>{
           sticky ? "fade-in fixed top-2 left-0 right-0 z-50 shadow-md backdrop-blur-2xl" : "w-full"
         } w-full border-b border-border bg-blue backdrop-blur-2xl`}
       >
-        <div className="flex px-2 sm:px-4">
-          <div className="flex h-16 sm:h-20 lg:h-24 items-center lg:justify-between space-x-2 sm:space-x-4 mx-auto w-full max-w-7xl">
+        <div className="flex gap-4 px-2 sm:px-4">
+          <div className="flex  h-16 sm:h-20 lg:h-24 items-center lg:justify-between space-x-2 sm:space-x-4 mx-auto w-full max-w-8xl">
             <div className="flex h-full bg-white">
               <a href="/" className="flex items-center space-x-2">
                 <img src="/logo.png" alt="Logo" className="h-10 w-32 sm:h-12 sm:w-40 lg:h-14 lg:w-48" />
@@ -98,33 +110,51 @@ useEffect(()=>{(async()=>{
                 </Link>
               ))}
             </nav>
+          </div>
 
-            {/* Right Actions */}
-            <div className="flex items-center space-x-1 sm:space-x-2">
-              <Button
+           {/* Right Actions */}
+            <div className="flex  relative right-1  items-center justify-between space-x-1 sm:space-x-2 mr-2">
+              {/* <Button
                 variant="ghost"
                 size="icon"
                 className="p-2 sm:p-4 rounded-full border-white text-white font-bold hover:cursor-pointer hover:bg-red"
               >
                 <Search className="h-4 w-4 sm:h-5 sm:w-5" />
                 <span className="sr-only">Search</span>
-              </Button>
+              </Button> */}
+
               {user?.userId ? (
                 <>
-                  <Link href="/profile">
+                  {/* <Link href="/profile">
                     <Button className="hidden sm:inline-flex bg-whitee rounded-full border-white text-white font-bold hover:cursor-pointer hover:bg-red">
                       Profile
                     </Button>
-                  </Link>
-                  <Button
-                    onClick={() => {
-                      handleLogout()
-                    }}
-                    className="hidden md:flex bg-red hover:bg-red-900 hover:cursor-pointer w-10 sm:w-14 rounded-2xl"
-                    aria-label="logout"
-                  >
-                    <SignOut className="w-10 sm:w-14" />
-                  </Button>
+                  </Link> */}
+                    <div className="flex mt-2 items-center gap-3" >
+                        <Link href="/profile">
+                          <Avatar className="h-10 w-10">
+                            <AvatarImage src="/abstract-geometric-shapes.png" alt="Your avatar" />
+                            <AvatarFallback>
+                              {Author?.username ? Author.username.charAt(0).toUpperCase() : "U"}
+                            </AvatarFallback>
+                          </Avatar>
+                        </Link>
+                        <Button variant="outline" size="sm" className=" hidden lg:flex text-blue rounded-2xl border-white hover:bg-red hover:text-blue"
+                        onClick={() => handleLogout()}
+                        >
+                                Log Out
+                                <SignOut className="ml-2 h-4 w-4" />
+                        </Button>
+                                      <Button
+                variant="ghost"
+                size="icon"
+                className="lg:hidden relative right-2 bg-red p-2"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              >
+                {mobileMenuOpen ? <X className="h-5 w-5 sm:h-6 sm:w-6" /> : <Menu className="h-5 w-5 sm:h-6 sm:w-6" />}
+                <span className="sr-only">Toggle menu</span>
+              </Button>
+                  </div>
                 </>
               ) : (
                 <>
@@ -133,21 +163,21 @@ useEffect(()=>{(async()=>{
                       Log in
                     </Button>
                   </Link>
-                </>
-              )}
-
-              {/* Mobile menu button */}
-              <Button
+                                <Button
                 variant="ghost"
                 size="icon"
-                className="lg:hidden bg-red p-2"
+                className="lg:hidden relative right-2 bg-red p-2"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               >
                 {mobileMenuOpen ? <X className="h-5 w-5 sm:h-6 sm:w-6" /> : <Menu className="h-5 w-5 sm:h-6 sm:w-6" />}
                 <span className="sr-only">Toggle menu</span>
               </Button>
+                </>
+              )}
+
+              {/* Mobile menu button */}
+
             </div>
-          </div>
         </div>
       </header>
 
@@ -184,7 +214,7 @@ useEffect(()=>{(async()=>{
                 onClick={() => {
                   handleLogout()
                 }}
-                className="flex-1 bg-red hover:bg-red-900 rounded-2xl"
+                className="flex-1  hover:bg-red-900 rounded-2xl"
                 aria-label="logout"
               >
                 <SignOut className="w-5 h-5 mr-2" />

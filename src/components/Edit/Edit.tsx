@@ -166,7 +166,7 @@ const EditPost = ({id}:props) => {
                 });
         }
 
-        console.log("Post to be updated:", newPost)
+        // console.log("Post to be updated:", newPost)
       setIsCreating(false)
     
 
