@@ -30,6 +30,7 @@ import {
   SidebarMenu,
 } from "../components/ui/sidebar"
 import Image from "next/image"
+import Link from "next/link"
 
 const data = {
   user: {
@@ -154,7 +155,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         
         <SidebarMenu>
-                <Image src="/logo.png" width="400" height={50} alt="User Avatar" />
+                <Link href="/">
+                  <Image src="/logo.png" width="400" height={50} alt="User Avatar" />
+                </Link>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
