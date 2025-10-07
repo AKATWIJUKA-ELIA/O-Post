@@ -10,6 +10,7 @@ import { Id } from "../../../convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
 import { LogOut as SignOut } from "lucide-react";
 import useLogout from "@/hooks/useLogout"
+import Link from "next/link";
 
 export default function ProfileLayout({
   children,
@@ -53,7 +54,7 @@ export default function ProfileLayout({
         <SidebarProvider >
         <AppSidebar   />
       <main className="flex-1 overflow-y-auto">
-        <header className="sticky top-0 border-b bg-background">
+        <header className="sticky top-0 z-50 border-b bg-background">
                 <div className="flex justify-between container mx-auto px-4 py-4 bg-blue ">
                   <div className="flex flex-col " >
                         <h1 className="text-4xl font-bold text-white "> O-Post Admin </h1>
@@ -61,12 +62,14 @@ export default function ProfileLayout({
                   </div>
 
                   <div className="flex mt-2 items-center gap-3" >
+                        <Link href="/profile" className="flex items-center gap-2">
                         <Avatar className="h-10 w-10">
                                       <AvatarImage src="/abstract-geometric-shapes.png" alt="Your avatar" />
                                       <AvatarFallback>
                                         {Author?.username ? Author.username.charAt(0).toUpperCase() : "U"}
                                       </AvatarFallback>
                         </Avatar>
+                        </Link>
                         <Button variant="outline" size="sm" className="text-blue rounded-2xl border-white hover:bg-red hover:text-blue"
                         onClick={() => handleLogout()}
                         >

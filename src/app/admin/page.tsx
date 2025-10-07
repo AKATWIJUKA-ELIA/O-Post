@@ -47,20 +47,22 @@ const PostList=() =>{
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-32">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <div className="flex animate-pulse items-center justify-center h-screen">
+        <div className="animate-spin  rounded-full h-12 w-12 border-b-2 border-blue"></div>
+        loading...
       </div>
     )
   }
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className=" flex flex-col border mt-2 mx-3 p-3 rounded-2xl bg-blue/5" >
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight md:ml-[15%]">News & Articles</h1>
           <p className="text-muted-foreground">Manage your posts and articles</p>
         </div>
-        <Button asChild>
+        <Button asChild className="bg-blue hover:bg-red rounded-2xl" >
           <Link href="/admin/create">
             <Plus className="mr-2 h-4 w-4" />
             Create Article
@@ -68,30 +70,19 @@ const PostList=() =>{
         </Button>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-        <div className="relative w-full sm:w-auto ml-5  ">
+      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center mt-2 justify-between">
+        <div className="relative w-full     ">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search articles..."
-            className="pl-8  w-full sm:w-[300px] rounded-2xl "
+            className="pl-8  w-full  rounded-2xl "
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
         
           />
         </div>
-        <div className="flex items-center space-x-2">
-          <span className="text-sm text-muted-foreground">View:</span>
-          <Button variant={viewMode === "grid" ? "default" : "outline"} size="icon" onClick={() => setViewMode("grid")}>
-            <LayoutGrid className="h-4 w-4" />
-          </Button>
-          <Button
-            variant={viewMode === "table" ? "default" : "outline"}
-            size="icon"
-            onClick={() => setViewMode("table")}
-          >
-            <LayoutList className="h-4 w-4" />
-          </Button>
-        </div>
+
+      </div>
       </div>
 
       

@@ -6,6 +6,7 @@ import { UserProfile } from '@/lib/types';
 import { Id } from '../../../convex/_generated/dataModel';
 import useGetUserById from '@/hooks/useGetUserById';
 import {formatDate} from '@/lib/utils';
+import Link from 'next/link';
 
 const Profile = ()=> {
 
@@ -52,9 +53,15 @@ const Profile = ()=> {
                 <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 border-4 border-white rounded-full"></div>
               </div>
 
-              <div className="flex-1 sm:py-4">
-                <h1 className="text-3xl font-bold text-gray-900">{userData?.username}</h1>
-                {/* <p className="text-lg text-gray-600 mt-1">Senior Product Designer</p> */}
+              <div className="flex w-full p-4  justify-between">
+                <h1 className="flex text-3xl font-bold text-gray-900">{userData?.username}</h1>
+                <p className="flex text-lg text-gray-600 mt-1"> {userData?.role==="admin"?(
+                        <Link href="/admin">
+                        <span className="text-blue-600 hover:underline">Admin Dashboard</span>
+                        </Link>
+                ):(
+                        <span className="text-gray-500">User</span>
+                )} </p>
               </div>
             </div>
 
@@ -100,49 +107,7 @@ const Profile = ()=> {
               </div>
             </div>
 
-            {/* <div className="mt-8 p-6 rounded-xl bg-gradient-to-br from-gray-50 to-blue-50 border border-gray-100">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-                <Briefcase className="w-5 h-5 mr-2 text-blue-600" />
-                About
-              </h2>
-              <p className="text-gray-700 leading-relaxed">
-                Passionate product designer with over 8 years of experience creating intuitive and engaging user experiences.
-                Specialized in design systems, user research, and bridging the gap between design and development.
-                Always excited to collaborate on projects that make a real impact.
-              </p>
-            </div>
 
-            <div className="mt-8">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-                <Award className="w-5 h-5 mr-2 text-blue-600" />
-                Skills & Expertise
-              </h2>
-              <div className="flex flex-wrap gap-2">
-                {['UI/UX Design', 'Figma', 'Design Systems', 'User Research', 'Prototyping', 'Accessibility', 'CSS', 'React', 'Design Thinking'].map((skill) => (
-                  <span
-                    key={skill}
-                    className="px-4 py-2 bg-gradient-to-r from-blue-50 to-cyan-50 text-blue-700 rounded-full text-sm font-medium border border-blue-200 hover:shadow-md transition-all duration-200"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div className="mt-8 grid grid-cols-3 gap-4">
-              <div className="p-6 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 text-white text-center">
-                <p className="text-3xl font-bold">127</p>
-                <p className="text-sm mt-1 text-blue-100">Projects</p>
-              </div>
-              <div className="p-6 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 text-white text-center">
-                <p className="text-3xl font-bold">4.9</p>
-                <p className="text-sm mt-1 text-green-100">Rating</p>
-              </div>
-              <div className="p-6 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 text-white text-center">
-                <p className="text-3xl font-bold">856</p>
-                <p className="text-sm mt-1 text-orange-100">Followers</p>
-              </div>
-            </div> */}
           </div>
         </div>
       </div>
