@@ -34,7 +34,7 @@ const CreatePost = () => {
   const generateUploadUrl = useMutation(api.posts.generateUploadUrl);
   const {CreatePost} = useCreatePost();
         const { setNotification } = useNotification();
-  const categories = ["Politics", "Technology", "Business", "Culture", "Science", "Sports"]
+  const categories = ["Politics", "Technology", "Business", "Culture", "Science", "Sports", "Health", "Travel", "Opinion", "Lifestyle", "Education"]
 
     const handleInputChange = (field: keyof Post, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
@@ -52,7 +52,7 @@ const CreatePost = () => {
       authorId: user?.User_id,
       excerpt: "",
       content: "",
-      category: "Politics",
+      category: "",
       postImage: "",
     })
         }
@@ -122,7 +122,7 @@ const CreatePost = () => {
         title: formData.title || "",
         excerpt: formData.excerpt || "",
         content: formData.content || "",
-        category: formData.category || "Politics",
+        category: formData.category || "",
         authorId: user?.User_id!,
         postImage: imageUrl || "/news-collage.png",
       }
@@ -198,6 +198,7 @@ const CreatePost = () => {
                   <div className="space-y-2">
                     <Label htmlFor="category" className='text-blue'>Category</Label>
                     <select   value={formData.category} onChange={(e) => handleInputChange("category", e.target.value)} className=' border rounded-xl p-3 w-full'>
+                      <option id="category"  value="" className=' border rounded-xl p-2 '>None</option>
                       {categories.map((cat)=>(
                         <option id="category"  value={cat} className=' border rounded-xl p-2 '>{cat}</option>
                       ))}
