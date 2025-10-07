@@ -9,23 +9,36 @@ import Link from "next/link"
 import { useUser } from "@/hooks/useUser"
 import type { Id } from "../../../convex/_generated/dataModel"
 import type { UserProfile } from "@/lib/types"
+import { getUserById } from "@/lib/convex"
+import { User } from "@/lib/types"
+import { formatDate } from "@/lib/utils"
 
 export default function ProfilePage() {
-  const { success, session } = useUser()
   const [user, setUser] = useState<UserProfile | null>()
-  const me = true
-  useEffect(() => {
-    if (success && session) {
-      setUser({
-        userId: session.userId as Id<"users">,
-        role: session.role as string,
-        isVerified: session.isVerified as boolean,
-        expiresAt: session.expiresAt as Date,
-      })
-      return
-    }
-    setUser(null)
-  }, [success, session])
+        const [profile, setprofile] = useState<User|null>(null);
+
+ 
+  useEffect(()=>{(async()=>{
+          const{success,session}=await useUser();
+          if(success&&session){
+                  setUser({
+                          userId:session.userId as Id<"users">,
+                          role:session.role as string,
+                          isVerified:session.isVerified as boolean,
+                          expiresAt:session.expiresAt as Date,});
+                          return;
+                        }
+                        setUser(null);
+                })();
+        },[]);
+
+         useEffect(()=>{
+                async function fetchAuthor(){
+                                                                const response = await getUserById(user?.userId as Id<"users">);
+                                                                setprofile(response.user);
+                                                        }
+                                                        fetchAuthor();
+                                                  },[user?.userId])
 
   // Mock user data - replace with real data from your backend
   const userData = {
@@ -90,18 +103,7 @@ export default function ProfilePage() {
     },
   ]
 
-  if (!me) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <Card className="p-8 text-center">
-          <h2 className="text-2xl font-serif mb-4">Please log in to view your profile</h2>
-          <Link href="/sign-in">
-            <Button>Log In</Button>
-          </Link>
-        </Card>
-      </div>
-    )
-  }
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -110,28 +112,24 @@ export default function ProfilePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-8">
             <Avatar className="h-24 w-24 sm:h-32 sm:w-32 border-4 border-background shadow-lg">
-              <AvatarImage src={userData.avatar || "/placeholder.svg"} alt={userData.name} />
-              <AvatarFallback className="text-2xl sm:text-3xl font-serif">SM</AvatarFallback>
+              <AvatarImage src={userData.avatar || "/placeholder.svg"} alt={profile?.username} />
+              <AvatarFallback className="text-8xl  font-serif font-bold items-center-safe">{profile?.username.slice(0,1)}</AvatarFallback>
             </Avatar>
             <div className="flex-1 w-full">
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                 <div>
                   <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-foreground mb-2">
-                    {userData.name}
+                    {profile?.username || "User"}
                   </h1>
-                  <p className="text-base sm:text-lg text-muted-foreground mb-3 sm:mb-4">{userData.username}</p>
+                  <p className="text-base sm:text-lg text-muted-foreground mb-3 sm:mb-4">{profile?.username}</p>
                   <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-sm text-muted-foreground">
                     <div className="flex items-center gap-1.5">
                       <Mail className="h-4 w-4" />
-                      <span className="break-all">{userData.email}</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <MapPin className="h-4 w-4" />
-                      <span>{userData.location}</span>
+                      <span className="break-all">{profile?.email}</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <Calendar className="h-4 w-4" />
-                      <span>Joined {userData.joinedDate}</span>
+                      <span>Joined {formatDate(profile?._creationTime||0)}</span>
                     </div>
                   </div>
                 </div>
