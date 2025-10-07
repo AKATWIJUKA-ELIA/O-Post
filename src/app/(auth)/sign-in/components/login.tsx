@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
 
+import{ useRouter } from"next/navigation";
+import useAuthenticate from "@/hooks/useAuthenticate"
 import{IoMdEyeOff} from"react-icons/io";
 import{IoEye}from"react-icons/io5"
 import Loader from "@/components/Loader/loader"
@@ -14,25 +16,29 @@ import Loader from "@/components/Loader/loader"
 const LoginForm = ({className,...props}:React.ComponentPropsWithoutRef<"form">)=> {
   const [Email, setEmail] = useState("")
   const [Password, setPassword] = useState("")
+  const{Authenticate}=useAuthenticate()
   const [passwordtype, setPasswordType] = useState("password")
   const [view, setView] = useState(false)
   const [IsSubmitting, setIsSubmitting] = useState(false)
   const [SubmittingError, setSubmittingError] = useState("")
-
-  const HandleSubmit = (e:React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-    // Simulate login process
-    setTimeout(() => {
-      setIsSubmitting(false)
-      if (Email !== "admin@example.com" || Password !== "password") {
-        setSubmittingError("Invalid email or password")
-      } else {
-        setSubmittingError("")
-        // Handle successful login
-      }
-    }, 2000)
-  }
+const router = useRouter()
+const HandleSubmit = async ( e : React . FormEvent < HTMLFormElement > ) => {
+         e.preventDefault (); 
+         setIsSubmitting ( true ) ;
+          try { const Auth = await Authenticate ( Email , Password ) 
+                if ( ! Auth ?. success ) {
+                         setSubmittingError ( Auth ?. message )
+                          setIsSubmitting ( false )
+                           return }
+                           setIsSubmitting ( false )
+                            router . push ( "/" ) 
+                        } catch ( error ) {
+                                 console . error ( error ) 
+                                 setSubmittingError ( "Error Logging in" )
+                                  setIsSubmitting ( false )
+                                 } finally {
+                                         setIsSubmitting ( false )
+                                          setTimeout ( ( ) => { setSubmittingError ( "" ) } , 10000 ) } }
 
   const HandleHide = () => {
     setPasswordType("password")

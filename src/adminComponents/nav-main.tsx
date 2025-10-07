@@ -30,11 +30,6 @@ export function NavMain() {
                         icon: SquarePlus   as LucideIcon,
                         link:"/admin/create",
                 },
-                {
-                        title: "All Posts",
-                        icon: Rows4 as LucideIcon,
-                        link:"/admin/posts",
-                },
                  
                 {
                         title: "News Letter",

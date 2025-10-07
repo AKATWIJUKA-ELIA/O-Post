@@ -13,10 +13,24 @@ export type Post = {
   excerpt: string
   content: string
   category: string
-  postImage: string
+  postImage: string|null
   upvotes?: number
   downvotes?: number
-  updatedAt?: string
+  updatedAt?: number
+}
+
+export type DwonloadPost = {
+        _id: Id<"posts">
+  title: string
+  authorId: Id<"users">
+  excerpt: string
+  content: string
+  category: string
+  postImage: string|null
+  upvotes?: number
+  downvotes?: number
+  updatedAt?: number
+        _creationTime?:number
 }
 
 export interface User {
@@ -66,4 +80,7 @@ export type Comment = {
 }
 export type CommentWithCommentor = Comment & {
         commentor: User|null
+}
+export type PostWithAuthor = DwonloadPost & {
+        author: User | null
 }

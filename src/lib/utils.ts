@@ -17,3 +17,28 @@ export const formatDate = (dateString: number) => {
 export function currentYear(): number {
   return new Date().getFullYear();
 }
+        export const handleCopy = (link:string) => {
+        if (typeof window === "undefined"){
+                return
+        }
+                navigator.clipboard.writeText(link);
+                return true;
+              
+                
+      };
+      
+       export const handleShare = (link: string,name:string) => {
+        if (navigator.share) {
+          navigator
+            .share({
+              title: `"Check out  ${name} on ShopCheap!`,
+              text: "Hey, take a look at this:",
+              url: link,
+            })
+            .then(() => console.log("Shared successfully"))
+            .catch((error) => console.error("Error sharing", error));
+        } else {
+                handleCopy(link)
+                alert("Sharing not supported on this device. Try copying the link instead.");
+        }
+      };

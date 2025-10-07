@@ -13,7 +13,7 @@ const useCreatePost = () => {
                         content: Post.content,
                         category: Post.category,
                         excerpt: Post.excerpt,
-                        postImage: Post.postImage,
+                        postImage: Post.postImage||"",
                         upvotes: 0,
                         downvotes: 0,
                 });
