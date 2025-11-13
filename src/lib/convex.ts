@@ -47,3 +47,12 @@ export async function getUserById(id:  Id<"users">) {
     };
   }
 }
+
+export const getSubscribers = async () => {
+        try {
+        const subscribers = await convex.query(api.NewsLetter.getSubscribers,{});
+        return { success: true, subscribers };
+        } catch {
+        return { success: false, message: "Internal Server Error" };
+        }
+};
