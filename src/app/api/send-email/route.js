@@ -20,6 +20,7 @@ export async function POST(request) {
       to,
       subject,
       text,
+      html: `${text}`,
     };
 
     const info = await transporter.sendMail(mailOptions);
