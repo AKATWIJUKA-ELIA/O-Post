@@ -34,7 +34,7 @@ const CreatePost = () => {
   const generateUploadUrl = useMutation(api.posts.generateUploadUrl);
   const {CreatePost} = useCreatePost();
         const { setNotification } = useNotification();
-  const categories = ["Politics", "Technology", "Business", "Culture", "Science", "Sports", "Health", "Travel", "Opinion", "Lifestyle", "Education"]
+  const categories = ["politics", "technology", "tusiness", "culture", "science", "sports", "health", "travel", "opinion", "lifestyle", "education"]
 
     const handleInputChange = (field: keyof Post, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))

@@ -6,15 +6,38 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Mail } from "lucide-react"
+import useAddEmail from "@/hooks/useAddEmail"
+import { useNotification } from "@/app/NotificationContext"
 
 export function Newsletter() {
-  const [email, setEmail] = useState("")
+        const [email, setEmail] = useState("")
+        const { save, emailError } = useAddEmail();
+        const { setNotification } = useNotification();
+        
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+const handleSubmit =async (e: React.FormEvent) => {
+                e.preventDefault()
     // Handle newsletter subscription
-    console.log("Subscribe:", email)
-    setEmail("")
+        await save(email).then((res)=>{
+                if(!res.success){
+                        setNotification({
+                                message: res.error || "Failed to subscribe. Please try again.",
+                                status: "error",
+                        });
+                        return;
+                }
+                setNotification({
+                        message: "Successfully subscribed to the newsletter!",
+                        status: "success",
+                });
+                setEmail("");
+        })
+  }
+  if(emailError){
+        setNotification({
+                message: "Sorry an error occurred while subscribing. Please try again later.",
+                status: "error",
+        });
   }
 
   return (
