@@ -28,6 +28,19 @@ export const CreatePost = mutation({
                 
         }
         })
+        export const DeletePost = mutation({
+        args:{id: v.id("posts")},
+        handler: async (ctx, args) => {
+                const { id } = args;
+                const exisiting = await ctx.db.get(id);
+                if (!exisiting) {
+                        return { success: false, message: "Post not found", status: 404 };
+                }
+                await ctx.db.delete(id);
+                return { success: true, message: "Post deleted successfully", status: 200 };
+        }
+        })
+        
       export const UpdatePost = mutation({
         args:{
                 post: v.object({

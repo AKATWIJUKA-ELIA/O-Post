@@ -5,18 +5,22 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { Search, Plus, Calendar, LayoutGrid, LayoutList } from "lucide-react"
+import { Search, Plus, Calendar, Trash2 } from "lucide-react"
 import Link from "next/link"
 import useGetAllPosts from "@/hooks/useGetAllPosts"
 import {  formatDate } from "@/lib/utils"
 import { getUserById } from "@/lib/convex"
 import { PostWithAuthor } from "@/lib/types"
+import { deletePost } from "@/lib/convex"
+import { Id } from "../../../convex/_generated/dataModel"
+import { useNotification } from "../NotificationContext"
 
 const PostList=() =>{
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
   const {data:posts} = useGetAllPosts();
   const [PostaWithAuthors, setPostsWithAuthors] = useState<PostWithAuthor[]>([]);
+  const {setNotification} = useNotification();
 
   useEffect(() => {
     if (posts) {
@@ -39,6 +43,21 @@ const PostList=() =>{
                 setLoading(false)
         }
   }, [posts])
+        const handleDelete = (postId: Id<"posts">) => async () => {
+                const res = await deletePost(postId);
+                        if(!res?.success){
+                                setNotification({
+                                status: "info",
+                                message: res?.message||"ssssomething went wrong",
+                         });
+                                return;
+                        }
+                        setPostsWithAuthors((prevPosts) => prevPosts.filter((post) => post._id !== postId));
+                        setNotification({ 
+                                status: "success",
+                                message: "Post deleted successfully."
+                         });
+        }
 
 
 
@@ -92,8 +111,9 @@ const PostList=() =>{
             </div>
           ) : (
             filteredNews?.map((item) => (
-              <Link key={item._id} href={`/admin/edit/${item._id}`} className="block">
+              
                 <Card className="h-full overflow-hidden hover:shadow-md transition-shadow">
+                        <Link key={item._id} href={`/admin/edit/${item._id}`} className="block">
                   {item.postImage && (
                     <div className="aspect-video w-full overflow-hidden">
                       <img
@@ -103,6 +123,7 @@ const PostList=() =>{
                       />
                     </div>
                   )}
+                  </Link>
                   <CardHeader className="p-4">
                     <div className="flex items-center justify-between">
                       <Badge variant="outline">{item.category}</Badge>
@@ -116,11 +137,12 @@ const PostList=() =>{
                   <CardContent className="p-4 pt-0">
                     <p className="line-clamp-3 text-sm text-muted-foreground">{item.excerpt}</p>
                   </CardContent>
-                  <CardFooter className="p-4 pt-0">
+                  <CardFooter className=" flex justify-between p-4 pt-0">
                     <p className="text-sm font-medium">By {item.author?.username}</p>
+                    <Trash2 className="hover:cursor-pointer text-2xl text-red-600 font-bold hover:scale-125 transition duration-300 " aria-label="delete this post"  onClick={handleDelete(item._id)} />
                   </CardFooter>
                 </Card>
-              </Link>
+              
             ))
           )}
         </div>
