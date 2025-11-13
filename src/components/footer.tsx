@@ -1,7 +1,10 @@
 import { Facebook, Twitter, Instagram, Linkedin, Youtube } from "lucide-react"
 import { currentYear } from "@/lib/utils"
 
+
 export function Footer() {
+
+                
   return (
     <footer className="bg-black/90 text-primary-foreground">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">

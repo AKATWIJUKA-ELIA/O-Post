@@ -2,6 +2,23 @@ import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
 export default defineSchema({
+
+        NewsLetter: defineTable({ email: v.string() }).index("by_email", ["email"]),
+        NewsLetterStorage: defineTable({
+        subject: v.string(),
+        content: v.string(),
+        status: v.union(
+                v.literal("sent"),
+                v.literal("scheduled"),
+                v.literal("failed"),
+                v.literal("bounced"),
+                v.literal("pending")
+                
+        ),
+        scheduledTime: v.number(),
+        DateSent: v.optional(v.number()),
+        receipients: v.array(v.string()),
+}),
         users: defineTable({
     username: v.string(),
     email: v.string(),
