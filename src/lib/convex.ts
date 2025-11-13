@@ -32,6 +32,14 @@ export const getUserByToken = async (token: string) => {
         return { success: false, message: "Internal Server Error", status: 500 };
     }
 }
+export async function deletePost(id:Id<"posts">) {
+  try {
+    const res = await convex.mutation(api.posts.DeletePost, { id });
+    return res;
+  } catch {
+    return { success: false, message: "Error deleting post" };
+  }
+}
 export async function getUserById(id:  Id<"users">) {
   if (!id) return { user: null, loading: false, error: "No ID provided" };
   try {
