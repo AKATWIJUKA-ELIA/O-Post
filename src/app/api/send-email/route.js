@@ -25,9 +25,9 @@ export async function POST(request) {
 
     const info = await transporter.sendMail(mailOptions);
 
-    return new Response(JSON.stringify({ message: 'Email sent successfully!', info }), { status: 200 });
+    return new Response(JSON.stringify({ message: 'Email sent successfully!', info, status: 200 }), { status: 200 });
   } catch (error) {
     console.error('Error sending email:', error);
-    return new Response(JSON.stringify({ message: 'Failed to send email', error }), { status: 500 });
+    return new Response(JSON.stringify({ message: 'Failed to send email', error, status: 500 }), { status: 500 });
   }
 }

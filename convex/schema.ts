@@ -17,7 +17,7 @@ export default defineSchema({
         scheduledTime: v.number(),
         DateSent: v.optional(v.number()),
         receipients: v.array(v.string()),
-}),
+}).index("by_status_and_scheduledTime", ["status", "scheduledTime"]),
         users: defineTable({
     username: v.string(),
     email: v.string(),
