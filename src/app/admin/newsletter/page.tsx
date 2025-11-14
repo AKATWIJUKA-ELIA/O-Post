@@ -71,7 +71,7 @@ const NewsletterAdminPage = () => {
       setScheduling(false);
       return;
     }
-    setNotification({ status: "success", message: "Newsletter saved as draft." });
+    setNotification({ status: "success", message: `Newsletter Scheduled for ${new Date(scheduledTime).toLocaleString()}.` });
     setScheduling(false);
         resetForm();
         setScheduledTime("");
