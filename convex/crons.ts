@@ -2,7 +2,7 @@ import { internalMutation, internalQuery, internalAction, mutation } from "./_ge
 import { v } from "convex/values";
 import { cronJobs } from "convex/server";
 import { internal, api } from "./_generated/api";
-import { Id } from "./_generated/dataModel";
+import NewsletterEmail from  "../src/EmailTemplates/Newsletter";
 
 
 export const fetchDueNewsletters = internalQuery({
@@ -43,13 +43,14 @@ export const sendScheduledNewsletters = internalAction({
 
       // Send to each recipient
                         for (const recipient of newsletter.receipients) {
+                                const html = NewsletterEmail(newsletter.title, newsletter.content);
                                 const response = await fetch('https://o-post.vercel.app/api/send-email', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({
                                 to: recipient,
                                 subject: newsletter.title,
-                                text: newsletter.content
+                                text: html,
                                 }),
                                 }).then((res) => res.json());
                                 if (response.status !== 200) {

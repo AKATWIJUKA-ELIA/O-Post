@@ -12,7 +12,7 @@ export const NewsletterEmail = (
 ) => {
   const {
     siteName = "O-Post",
-    logoUrl = "https://placehold.co/120x32/1D4ED8/ffffff?text=O-Post",
+    logoUrl = "https://expert-goldfish-40.convex.cloud/api/storage/01ad3265-711a-45ef-8c61-5c92a3d8cb9c",
     unsubscribeUrl = "#",
     preheader = subject,
   } = options;

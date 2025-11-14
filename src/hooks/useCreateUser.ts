@@ -37,9 +37,14 @@ const useCreateUser = () => {
                  if(!res.success){
                         return { success: false, message: res.message , status: 400 };
                 }
-                sendEmail(`${User.email}`,"Welcome to The O-Post", WelcomeEmail(User as User,token));
-                sendEmail(`${Admin}`,"New User Created", `<html><body><h1>New User Created</h1><p>Username: ${User.username}</p><p>Email: ${User.email}</p></body></html>`);
-                return { success: true, message:res.message ,  status: 200 };
+                await sendEmail(`${User.email}`,"Welcome to The O-Post", WelcomeEmail(User as User,token)).then(async(res)=>{
+                        if(!res.success){
+                                console.error("Error sending welcome email:", res.message);
+                        }
+                         return { success: true, message:res.message ,  status: 200 };
+                })
+                // await sendEmail(`${Admin}`,"New User Created", `<html><body><h1>New User Created</h1><p>Username: ${User.username}</p><p>Email: ${User.email}</p></body></html>`);
+               
                 }catch(error){
                         return  { success: false, message: error as string , status: 500 };
                         
