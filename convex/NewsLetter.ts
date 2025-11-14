@@ -10,7 +10,7 @@ export const AddEmail = mutation({
             throw new ConvexError("Invalid email address.");
           }
           const existing = await ctx.db
-      .query("NewsLetter")
+      .query("subscriptions")
       .withIndex("by_email", (q) => q.eq("email", args.email))
       .unique();
       
@@ -19,7 +19,7 @@ export const AddEmail = mutation({
           }
       
           // If not found, insert the email
-          await ctx.db.insert("NewsLetter", {
+          await ctx.db.insert("subscriptions", {
             email: args.email,
           });
         },
@@ -28,13 +28,13 @@ export const AddEmail = mutation({
       export const getSubscribers = query({
         args:{},
         handler: async(ctx)=>{
-                const subscribeList = await ctx.db.query("NewsLetter").collect()
+                const subscribeList = await ctx.db.query("subscriptions").collect()
                 return subscribeList
         }
       })
       export const CreateNewsLetter = mutation({
         args:{
-                subject: v.string(),
+                title: v.string(),
                 content: v.string(),
                 recipients: v.array(v.string()),
                status: v.union(
@@ -48,9 +48,9 @@ export const AddEmail = mutation({
                 DateSent: v.optional(v.number()),
         },
         handler: async (ctx, args) => {
-                const { subject, content, recipients, status, scheduledTime, DateSent } = args;
+                const { title, content, recipients, status, scheduledTime, DateSent } = args;
                 const newsletter = await ctx.db.insert("NewsLetterStorage", {
-                        subject,
+                        title: title,
                         content,
                         receipients: recipients,
                         status,
@@ -72,7 +72,7 @@ export const AddEmail = mutation({
         export const updateNewsLetter = mutation({
         args: {
           _id: v.id("NewsLetterStorage"),
-          subject: v.optional(v.string()),
+          title: v.optional(v.string()),
           content: v.optional(v.string()),
           receipients: v.optional(v.array(v.string())),
           status: v.optional(
@@ -89,14 +89,15 @@ export const AddEmail = mutation({
           _creationTime: v.optional(v.number()),
         },
         handler:async (ctx, args) => {
-                const { _id, subject, content, receipients, status, scheduledTime, DateSent } = args;
+                const { _id, title, content, receipients, status, scheduledTime, DateSent } = args;
+                const existing = await ctx.db.get(_id);
                 await ctx.db.patch(_id, {
-                        subject,
-                        content,
-                        receipients:receipients,
-                        status,
-                        scheduledTime,
-                        DateSent
+                        title:title?title: existing?.title,
+                        content:content?content: existing?.content,
+                        receipients:receipients?receipients: existing?.receipients,
+                        status:status?status: existing?.status,
+                        scheduledTime:scheduledTime?scheduledTime: existing?.scheduledTime,
+                        DateSent:DateSent?DateSent: existing?.DateSent,
                 });
         }
         })
@@ -105,7 +106,7 @@ export const AddEmail = mutation({
                 args:{email: v.string()},
                 handler: async (ctx, args) => {
                         const { email } = args;
-                        const exisiting = await ctx.db.query("NewsLetter")
+                        const exisiting = await ctx.db.query("subscriptions")
                         .withIndex("by_email", (q) => q.eq("email", email))
                         .unique();
                         if (!exisiting) {
@@ -113,5 +114,16 @@ export const AddEmail = mutation({
                         }
                         await ctx.db.delete(exisiting._id);
                         return { success: true, message: "Subscriber deleted successfully" };
+                }
+        })
+        export const deleteNewsLetter = mutation({
+                args: { id: v.id("NewsLetterStorage") },
+                handler: async (ctx, args) => {
+                        const exisiting = await ctx.db.get(args.id);
+                        if (!exisiting) {
+                                return { success: false, message: "Newsletter not found" };
+                        }
+                        await ctx.db.delete(args.id);
+                        return { success: true, message: "Newsletter deleted successfully" };
                 }
         })

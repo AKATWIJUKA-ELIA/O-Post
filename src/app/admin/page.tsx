@@ -44,6 +44,11 @@ const PostList=() =>{
         }
   }, [posts])
         const handleDelete = (postId: Id<"posts">) => async () => {
+                   const confirmed = typeof window !== "undefined"
+            ? window.confirm("This action cannot be undone. Are you sure you want to delete this post?")
+            : false;
+          if (!confirmed) return;
+          
                 const res = await deletePost(postId);
                         if(!res?.success){
                                 setNotification({

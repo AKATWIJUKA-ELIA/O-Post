@@ -64,3 +64,64 @@ export const getSubscribers = async () => {
         return { success: false, message: "Internal Server Error" };
         }
 };
+
+export type NewsletterStatus = "pending" | "sent" | "scheduled" | "failed" | "bounced";
+
+export const createNewsletter = async (args: {
+  title: string;
+  content: string;
+  recipients: string[];
+  status: NewsletterStatus;
+  scheduledTime: number;
+  DateSent?: number;
+}) => {
+  try {
+    const id = await convex.mutation(api.NewsLetter.CreateNewsLetter, {
+      title: args.title,
+      content: args.content,
+      recipients: args.recipients,
+      status: args.status,
+      scheduledTime: args.scheduledTime,
+      DateSent: args.DateSent,
+    });
+    return { success: true, id };
+  } catch (e) {
+    return { success: false, message: e instanceof Error ? e.message : "Failed to create newsletter" };
+  }
+};
+
+export const updateNewsletter = async (args: {
+  _id: Id<"NewsLetterStorage">;
+  title?: string;
+  content?: string;
+  receipients?: string[];
+  status?: NewsletterStatus;
+  scheduledTime?: number;
+  DateSent?: number;
+}) => {
+  try {
+    await convex.mutation(api.NewsLetter.updateNewsLetter, args as any);
+    return { success: true as const };
+  } catch (e) {
+    return { success: false as const, message: e instanceof Error ? e.message : "Failed to update newsletter" };
+  }
+};
+
+export const getNewsLetters = async () => {
+  try {
+    const list = await convex.query(api.NewsLetter.getNewsLetters, {});
+    return { success: true as const, list };
+  } catch (e) {
+    return { success: false as const, message: e instanceof Error ? e.message : "Failed to load newsletters" };
+  }
+};
+
+export const deleteNewsletter = async (id: Id<"NewsLetterStorage">) => {
+        try {
+        await convex.mutation(api.NewsLetter.deleteNewsLetter, { id });
+        return { success: true as const };
+        }
+        catch (e) {
+        return { success: false as const, message: e instanceof Error ? e.message : "Failed to delete newsletter" };
+        }
+}
