@@ -13,6 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 import { getUserById } from "@/lib/convex"
 import { LogOut as SignOut } from "lucide-react"
 
+
 const links: { name: string; href: string }[] = [
   { name: "World", href: "world" },
   { name: "Politics", href: "politics" },
@@ -49,7 +50,7 @@ useEffect(()=>{(
                 }
                         setUser(null);
                 })();
-        },[]);
+        },[pathname]);
 
                         useEffect(()=>{
                                                 async function fetchAuthor(){

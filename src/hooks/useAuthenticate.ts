@@ -14,6 +14,7 @@ interface UsertoSave {
         success:boolean
         message: string
         status:number
+        role?:string
         user:{
                 _id?: string;
                 username: string,
@@ -82,10 +83,10 @@ const useAuthenticate = () => {
                         
                         
                         
-                        return { success: true, status: 201, message: 'Success' };
+                        return { success: true, status: 201, message: 'Success',role: user?.role  };
                 } catch  {
                         console.error('Error during session creation:');
-                        return { success: false, status: 500, message: `Internal Server Error ` };
+                        return { success: false, status: 500, message: `Internal Server Error `,role: null };
                 }
       } catch {
         return { success: false, message: "Internal Server Error" };
