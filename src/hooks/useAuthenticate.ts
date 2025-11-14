@@ -35,7 +35,6 @@ const useAuthenticate = () => {
      const authenticate = useAction (api.users.AuthenticateUser);
     const Authenticate = async (email: string | "",password:string) => {
       try {
-        
               const res:response = await authenticate({email,password})
         if(!res.success){
                 if(res?.status===404){

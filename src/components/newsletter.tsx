@@ -11,7 +11,7 @@ import { useNotification } from "@/app/NotificationContext"
 
 export function Newsletter() {
         const [email, setEmail] = useState("")
-        const { save, emailError } = useAddEmail();
+        const { save } = useAddEmail();
         const { setNotification } = useNotification();
         
 
@@ -33,12 +33,7 @@ const handleSubmit =async (e: React.FormEvent) => {
                 setEmail("");
         })
   }
-  if(emailError){
-        setNotification({
-                message: "Sorry an error occurred while subscribing. Please try again later.",
-                status: "error",
-        });
-  }
+ 
 
   return (
     <section className="py-16 md:py-24 bg-accent text-accent-foreground">

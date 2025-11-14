@@ -6,7 +6,6 @@ import { redirect } from 'next/dist/server/api-utils'
 const isProtected = [
         '/profile',
         "/admin",
-        
 ]
 const publicRoutes = ['/sign-in', '/sign-up']
 const RoleProtected = ['/admin(.*)',  ];
@@ -17,7 +16,7 @@ const Middleware = async (req: NextRequest) => {
         const isPublicRoute = publicRoutes.includes(path)
         const isRoleProtected = RoleProtected.some((pattern) => new RegExp(pattern).test(path));
 
-        const cookie = (await cookies()).get("O-Session")?.value
+        const cookie =  cookies().get("O-Session")?.value
         // console.log("session",cookie)
         const session = cookie ?await decrypt(cookie):null
         
@@ -28,7 +27,7 @@ const Middleware = async (req: NextRequest) => {
         if(
                 isRoleProtected && ( session?.role !== "admin")){
                         return NextResponse.redirect(new URL('/unauthorized', req.url));
-                }                  
+                }
 
         if (isPublicRoute && session?.userId && req.nextUrl.pathname != '/') {
                 return NextResponse.redirect(new URL('/', req.nextUrl))
