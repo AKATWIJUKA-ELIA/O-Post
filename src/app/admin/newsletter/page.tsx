@@ -62,7 +62,7 @@ const NewsletterAdminPage = () => {
       title:subject,
       content,
       recipients: emails,
-      status: "pending",
+      status: "scheduled",
       scheduledTime: new Date(scheduledTime).getTime(),
     });
     setSaving(false);
