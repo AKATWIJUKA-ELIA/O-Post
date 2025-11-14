@@ -32,6 +32,10 @@ const HandleSubmit = async ( e : React . FormEvent < HTMLFormElement > ) => {
                            return 
                         }
                            setIsSubmitting ( false )
+                           if ( Auth.role === "admin" ) {
+                                   router . push ( "/admin" )
+                                    return
+                                   }
                             router . push ( "/" )
                         } catch ( error ) {
                                  console . error ( error ) 
