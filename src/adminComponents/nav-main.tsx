@@ -1,10 +1,11 @@
 "use client"
 
 import {type LucideIcon } from "lucide-react"
-import {LayoutDashboardIcon,HomeIcon,SquarePlus,Rows4,
+import {LayoutDashboardIcon,HomeIcon,SquarePlus,
+        // Rows4,
         // Users,HandCoins,SquareStack,User
         Newspaper,
-        Clock
+        // Clock
 
 } from "lucide-react"
 
@@ -36,10 +37,10 @@ export function NavMain() {
                         icon: Newspaper    as LucideIcon,
                         link:"/admin/newsletter",
                 },
-                {
-                        title: "Scheduled Posts",
-                        icon: Clock   as unknown as LucideIcon,
-                        link:"/admin/pending",}
+                // {
+                //         title: "Scheduled Posts",
+                //         icon: Clock   as unknown as LucideIcon,
+                //         link:"/admin/pending",}
                 
                 
         ]
