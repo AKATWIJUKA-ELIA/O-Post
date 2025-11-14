@@ -3,9 +3,8 @@ import { v } from "convex/values";
 
 export default defineSchema({
 
-        NewsLetter: defineTable({ email: v.string() }).index("by_email", ["email"]),
         NewsLetterStorage: defineTable({
-        subject: v.string(),
+        title: v.string(),
         content: v.string(),
         status: v.union(
                 v.literal("sent"),
