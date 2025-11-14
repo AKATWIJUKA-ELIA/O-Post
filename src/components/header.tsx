@@ -36,14 +36,20 @@ export function Header() {
   const [user, setUser] = useState<UserProfile | null>(null)
         const [Author, setAuthor] = useState<User | null>(null);
 
-useEffect(()=>{(async()=>{
+useEffect(()=>{(
+        async()=>{
         const{success,session}=await useUser();
         if(success&&session){
                 setUser({
                         userId:session.userId as Id<"users">,
                         role:session.role as string,
                         isVerified:session.isVerified as boolean,
-                        expiresAt:session.expiresAt as Date,});return;}setUser(null);})();},[]);
+                        expiresAt:session.expiresAt as Date,});
+                        return;
+                }
+                        setUser(null);
+                })();
+        },[]);
 
                         useEffect(()=>{
                                                 async function fetchAuthor(){

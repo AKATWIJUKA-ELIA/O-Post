@@ -25,13 +25,14 @@ const router = useRouter()
 const HandleSubmit = async ( e : React . FormEvent < HTMLFormElement > ) => {
          e.preventDefault (); 
          setIsSubmitting ( true ) ;
-          try { const Auth = await Authenticate ( Email , Password ) 
+          try { const Auth = await Authenticate ( Email , Password )
                 if ( ! Auth ?. success ) {
                          setSubmittingError ( Auth ?. message )
                           setIsSubmitting ( false )
-                           return }
+                           return 
+                        }
                            setIsSubmitting ( false )
-                            router . push ( "/" ) 
+                            router . push ( "/" )
                         } catch ( error ) {
                                  console . error ( error ) 
                                  setSubmittingError ( "Error Logging in" )

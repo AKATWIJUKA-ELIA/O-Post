@@ -8,11 +8,11 @@ export async function useUser() {
         if (!session) {
                 return { 
                         success:false,
-                        session: null 
+                        session: null
                         };
         }
         // console.log("session in useUser",session)
-        return { 
+        return {
                 success:true,
                 session
         };
