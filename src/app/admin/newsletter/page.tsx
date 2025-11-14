@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { useNotification } from "../../NotificationContext";
-import { getSubscribers, createNewsletter, updateNewsletter, getNewsLetters } from "@/lib/convex";
+import {  createNewsletter, updateNewsletter,  } from "@/lib/convex";
 import { useSendMail } from "@/hooks/useSendMail";
 import NewsletterEmail from "@/EmailTemplates/Newsletter";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
