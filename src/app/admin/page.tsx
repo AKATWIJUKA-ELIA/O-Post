@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { Search, Plus, Calendar, Trash2 } from "lucide-react"
+import { Search, Plus, Calendar, Trash2, Share2 } from "lucide-react"
 import Link from "next/link"
 import useGetAllPosts from "@/hooks/useGetAllPosts"
 import {  formatDate } from "@/lib/utils"
@@ -14,6 +14,7 @@ import { PostWithAuthor } from "@/lib/types"
 import { deletePost } from "@/lib/convex"
 import { Id } from "../../../convex/_generated/dataModel"
 import { useNotification } from "../NotificationContext"
+import { handleShare } from "@/lib/utils"
 
 const PostList=() =>{
   const [loading, setLoading] = useState(true)
@@ -144,7 +145,16 @@ const PostList=() =>{
                   </CardContent>
                   <CardFooter className=" flex justify-between p-4 pt-0">
                     <p className="text-sm font-medium">By {item.author?.username}</p>
+                    <div className="flex items-center gap-3 " >
+                        <h1 className="flex gap-2
+                         border rounded-full p-1 border-blue items-center
+                          hover:cursor-pointer transition duration-300  
+                          text-blue hover:bg-blue hover:text-white "
+                          onClick={()=>handleShare(`https://o-post.vercel.app/news/${item._id}`, item.title)}
+                          > 
+                                <Share2 className=" w-4 h-4"  /> Share </h1>
                     <Trash2 className="hover:cursor-pointer text-2xl text-red-600 font-bold hover:scale-125 transition duration-300 " aria-label="delete this post"  onClick={handleDelete(item._id)} />
+                    </div>
                   </CardFooter>
                 </Card>
               
