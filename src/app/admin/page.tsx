@@ -21,21 +21,12 @@ const PostList=() =>{
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
   const {data:posts} = useGetAllPosts();
-  const [PostaWithAuthors, setPostsWithAuthors] = useState<PostWithAuthor[]>([]);
+  const [PostsWithAuthors, setPostsWithAuthors] = useState<PostWithAuthor[]>([]);
   const {setNotification} = useNotification();
 
   useEffect(() => {
     if (posts) {
-      const fetchAuthors = async () => {
-        const postsWithAuthors = await Promise.all(
-          posts.map(async (post) => {
-            const authorResult = await getUserById(post.authorId);
-            return { ...post, author: authorResult.user ?? null };
-          })
-        );
-        setPostsWithAuthors(postsWithAuthors);
-      };
-      fetchAuthors();
+      setPostsWithAuthors(posts);
       setLoading(false);
     }
   }, [posts]);
@@ -68,7 +59,7 @@ const PostList=() =>{
 
 
 
-  const filteredNews = PostaWithAuthors?.filter((item) => item.title.toLowerCase().includes(searchQuery.toLowerCase()))
+  const filteredNews = PostsWithAuthors?.filter((item) => item.title.toLowerCase().includes(searchQuery.toLowerCase()))
 
   if (loading) {
     return (

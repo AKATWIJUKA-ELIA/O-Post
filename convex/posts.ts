@@ -91,8 +91,10 @@ export const CreatePost = mutation({
                 handler:async(ctx)=>{
                         const posts = await ctx.db.query("posts").order("desc").collect();
                         const postsWithUrls = await Promise.all(posts.map(async(post)=>{
+                                const author = await ctx.db.get(post.authorId);
                                 return {
                                         ...post,
+                                        author,
                                         postImage: post.postImage ? await ctx.storage.getUrl(post.postImage) : "",
                                 }
                         }))
@@ -126,11 +128,12 @@ export const CreatePost = mutation({
                                         postId: args.postId,
                                         type: "upvote",
                                 })
-                        return {success:true,message:"Post updated successfully",status:200,post:updatedPost};
+                       return {success:true,message:"Post updated successfully",status:200,post:updatedPost};
                                 
                         }
-                        return { success: false, message: "you have already liked this post", status: 400, post: null };
-                       
+
+                        return { success: false, message: "you have already liked/disliked this post", status: 400, post: null };
+
                 }
         })
 
