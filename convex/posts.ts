@@ -129,7 +129,7 @@ export const CreatePost = mutation({
                         return {success:true,message:"Post updated successfully",status:200,post:updatedPost};
                                 
                         }
-                        return { success: false, message: "you have already liked this post", status: 400, post: null };
+                        return { success: false, message: "you have already liked/disliked this post", status: 400, post: null };
                        
                 }
         })
@@ -152,7 +152,7 @@ export const CreatePost = mutation({
                         ))
                         .unique();
                         if (existingInteraction) {
-                                return { success: false, message: "you have already disliked this post", status: 400, post: null };
+                                return { success: false, message: "you have already  liked/disliked this post", status: 400, post: null };
                         }
                         const updatedPost = await ctx.db.patch(args.postId,{
                                 downvotes: post.downvotes+1

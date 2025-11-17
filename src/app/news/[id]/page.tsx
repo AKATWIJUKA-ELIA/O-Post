@@ -17,6 +17,7 @@ import { useAppSelector } from "@/hooks"
 import {handleShare} from "@/lib/utils"
 import { BASE_URL } from "@/lib/urls"
 import { useNotification } from "@/app/NotificationContext"
+import useGetPostsByCategory from '@/hooks/useGetPostsByCategory';
 
 const relatedArticles = [
   {
@@ -54,7 +55,7 @@ export default function NewsArticlePage({ params }: PageProps) {
                 const { likePost, disLikePost } = useInteractWithPost();
                 const user = useAppSelector((state)=>state.user.user)
                 const { setNotification } = useNotification();
-               
+               const { data: relatedArticles, loading } = useGetPostsByCategory(article?.category || "");
 
           useEffect(()=>{
                 async function fetchAuthor(){
@@ -204,22 +205,21 @@ export default function NewsArticlePage({ params }: PageProps) {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <h2 className="mb-8 font-serif text-3xl font-bold text-foreground">Related Articles</h2>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {relatedArticles.map((related) => (
+            {relatedArticles?.map((related) => (
               <Link
-                key={related.id}
-                href={`/news/${related.id}`}
+                key={related._id}
+                href={`/news/${related._id}`}
                 className="group rounded-lg border border-border bg-card p-6 transition-all hover:border-primary hover:shadow-md"
               >
                 <div className="mb-3 flex items-center gap-2 text-xs text-muted-foreground">
                   <span className="rounded-full bg-primary/10 px-2 py-1 font-medium text-primary">
                     {related.category}
                   </span>
-                  <span>{related.date}</span>
+                  <span>{formatDate(related._creationTime)}</span>
                 </div>
                 <h3 className="mb-2 text-balance font-semibold leading-snug text-foreground group-hover:text-primary">
                   {related.title}
                 </h3>
-                <p className="text-sm text-muted-foreground">{related.readTime}</p>
               </Link>
             ))}
           </div>
