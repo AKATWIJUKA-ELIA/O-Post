@@ -16,6 +16,7 @@ import { CommentSection } from "@/components/CommentSection/Comments"
 import { useAppSelector } from "@/hooks"
 import {handleShare} from "@/lib/utils"
 import { BASE_URL } from "@/lib/urls"
+import { useNotification } from "@/app/NotificationContext"
 
 const relatedArticles = [
   {
@@ -52,6 +53,7 @@ export default function NewsArticlePage({ params }: PageProps) {
           const [Author, setAuthor] = useState<User|null>(null);
                 const { likePost, disLikePost } = useInteractWithPost();
                 const user = useAppSelector((state)=>state.user.user)
+                const { setNotification } = useNotification();
                
 
           useEffect(()=>{
@@ -64,14 +66,28 @@ export default function NewsArticlePage({ params }: PageProps) {
 
           const handleLike = async () => {
                 if (!article) return;
+                if(!user){
+                        setNotification({status:"info",message:"Please login to like the post"})
+                        return;
+                }
                 const response = await likePost(article._id, user?.User_id as Id<"users">);
-                console.log("Like Response:", response);
+                if(!response.success){
+                        setNotification({status:"error",message:response.message||"Something went wrong"})
+                        return;
+                }
                 // Optionally update local state or refetch article data here
           }
           const handleDisLike = async () => {
                 if (!article) return;
+                 if(!user){
+                        setNotification({status:"info",message:"Please login to downvote the post"})
+                        return;
+                }
                 const response = await disLikePost(article._id, user?.User_id as Id<"users">);
-                console.log("Like Response:", response);
+                if(!response.success){
+                        setNotification({status:"error",message:response.message||"Something went wrong"})
+                        return;
+                }
                 // Optionally update local state or refetch article data here
           }
           const sharePost = (link:string, name:string) => {
