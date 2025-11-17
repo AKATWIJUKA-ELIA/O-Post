@@ -10,7 +10,7 @@ import NewsletterEmail from "@/EmailTemplates/Newsletter";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { formatDate } from "@/lib/utils";
 import type { Id } from "../../../../convex/_generated/dataModel";
-import { useQuery } from "convex/react";
+import { useQuery } from "convex-helpers/react/cache";
 import { api } from "../../../../convex/_generated/api";
 import {deleteNewsletter} from "@/lib/convex";
 import { Label } from "@/components/ui/label";
