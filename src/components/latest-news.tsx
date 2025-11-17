@@ -49,20 +49,11 @@ export function LatestNews() {
         const { data:posts, } = useGetAllPosts();
                 const mainPost = posts && posts.length > 0 ? posts[0] : null;
                 const [Author, setAuthor] = useState<User|null>(null);
-                  const [PostaWithAuthors, setPostsWithAuthors] = useState<PostWithAuthor[]>([]);
+                  const [PostsWithAuthors, setPostsWithAuthors] = useState<PostWithAuthor[]>([]);
 
   useEffect(() => {
     if (posts) {
-      const fetchAuthors = async () => {
-        const postsWithAuthors = await Promise.all(
-          posts.map(async (post) => {
-            const authorResult = await getUserById(post.authorId);
-            return { ...post, author: authorResult.user ?? null };
-          })
-        );
-        setPostsWithAuthors(postsWithAuthors);
-      };
-      fetchAuthors();
+         setPostsWithAuthors(posts);
     }
   }, [posts]);
         
@@ -82,7 +73,7 @@ export function LatestNews() {
         <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-12">Other Updates</h2>
 
         <div className="max-w-4xl mx-auto space-y-6">
-          {PostaWithAuthors.map((item, index) => (
+          {PostsWithAuthors.map((item, index) => (
             <a
               key={index}
               href={`/news/${item._id}`}

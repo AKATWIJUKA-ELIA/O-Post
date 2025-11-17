@@ -26,16 +26,7 @@ const PostList=() =>{
 
   useEffect(() => {
     if (posts) {
-      const fetchAuthors = async () => {
-        const postsWithAuthors = await Promise.all(
-          posts.map(async (post) => {
-            const authorResult = await getUserById(post.authorId);
-            return { ...post, author: authorResult.user ?? null };
-          })
-        );
-        setPostsWithAuthors(postsWithAuthors);
-      };
-      fetchAuthors();
+         setPostsWithAuthors(posts);
       setLoading(false);
     }
   }, [posts]);

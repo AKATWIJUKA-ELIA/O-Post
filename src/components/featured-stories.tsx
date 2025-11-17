@@ -11,51 +11,17 @@ import { PostWithAuthor, User } from "@/lib/types"
 import { Id } from "../../convex/_generated/dataModel"
 import { truncateString } from "@/lib/utils"
 
-const stories = [
-  {
-    category: "Technology",
-    title: "AI Revolution Transforms Healthcare Industry",
-    excerpt: "New artificial intelligence systems are helping doctors diagnose diseases with unprecedented accuracy.",
-    author: "James Chen",
-    date: "March 14, 2025",
-    image: "/ai-healthcare-technology-medical.jpg",
-  },
-  {
-    category: "Business",
-    title: "Markets Rally on Economic Recovery Signs",
-    excerpt: "Global stock markets surge as economic indicators point to sustained growth across major economies.",
-    author: "Emily Rodriguez",
-    date: "March 14, 2025",
-    image: "/stock-market-trading-floor-business.jpg",
-  },
-  {
-    category: "Culture",
-    title: "Renaissance of Independent Cinema",
-    excerpt: "Film festivals showcase a new wave of independent filmmakers challenging Hollywood conventions.",
-    author: "Michael Park",
-    date: "March 13, 2025",
-    image: "/cinema-film-festival-movie-theater.jpg",
-  },
-]
+
 
 export function FeaturedStories() {
         const { data:posts, } = useGetAllPosts();
                         const mainPost = posts && posts.length > 0 ? posts[0] : null;
                         const [Author, setAuthor] = useState<User|null>(null);
-                          const [PostaWithAuthors, setPostsWithAuthors] = useState<PostWithAuthor[]>([]);
+                          const [PostsWithAuthors, setPostsWithAuthors] = useState<PostWithAuthor[]>([]);
         
           useEffect(() => {
             if (posts) {
-              const fetchAuthors = async () => {
-                const postsWithAuthors = await Promise.all(
-                  posts.map(async (post) => {
-                    const authorResult = await getUserById(post.authorId);
-                    return { ...post, author: authorResult.user ?? null };
-                  })
-                );
-                setPostsWithAuthors(postsWithAuthors);
-              };
-              fetchAuthors();
+                 setPostsWithAuthors(posts);
             }
           }, [posts]);
                 
@@ -86,7 +52,7 @@ export function FeaturedStories() {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {PostaWithAuthors.slice(4,).map((story, index) => (
+          {PostsWithAuthors.slice(4,).map((story, index) => (
             <article key={index} className="group cursor-pointer">
               <div className="relative aspect-[3/2] rounded-lg overflow-hidden mb-4">
                 <Link href={`/news/${story._id}`} >
