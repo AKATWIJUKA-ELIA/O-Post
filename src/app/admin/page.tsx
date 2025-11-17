@@ -15,6 +15,7 @@ import { deletePost } from "@/lib/convex"
 import { Id } from "../../../convex/_generated/dataModel"
 import { useNotification } from "../NotificationContext"
 import { handleShare } from "@/lib/utils"
+import { BASE_URL } from "@/lib/urls"
 
 const PostList=() =>{
   const [loading, setLoading] = useState(true)
@@ -150,7 +151,7 @@ const PostList=() =>{
                          border rounded-full p-1 border-blue items-center
                           hover:cursor-pointer transition duration-300  
                           text-blue hover:bg-blue hover:text-white "
-                          onClick={()=>handleShare(`https://o-post.vercel.app/news/${item._id}`, item.title)}
+                          onClick={()=>handleShare(`${BASE_URL}/news/${item._id}`, item.title)}
                           > 
                                 <Share2 className=" w-4 h-4"  /> Share </h1>
                     <Trash2 className="hover:cursor-pointer text-2xl text-red-600 font-bold hover:scale-125 transition duration-300 " aria-label="delete this post"  onClick={handleDelete(item._id)} />

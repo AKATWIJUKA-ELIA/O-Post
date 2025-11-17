@@ -3,6 +3,7 @@ import { useAction,useMutation } from "convex/react";
 import { useSendMail } from "./useSendMail";
 import { randomBytes } from 'crypto';
 import { Id } from "../../convex/_generated/dataModel";
+import { BASE_URL } from "@/lib/urls";
 
 const useForgotPassword = () => {
         const {sendEmail} = useSendMail();
@@ -77,7 +78,7 @@ const useForgotPassword = () => {
 <body style="background:#f4f4f4;">
 
   <div class="container">
-<a href="https://o-post.vercel.app/" > 
+<a href="${BASE_URL}/" > 
 <div 
   style="
     background-image: url('https://cheery-cod-687.convex.cloud/api/storage/143325e4-3c05-4b88-82ba-cbbfa7fcd594');
@@ -96,13 +97,13 @@ const useForgotPassword = () => {
     <h4>Click the button below to set a new password. If you did not request this, you can safely ignore this email.</h4>
     <a 
       class=" button   " style="background-color:black; cursor:pointer; color:gold; border:1px solid black;"
-      href="https://o-post.vercel.app/passwordChange?3c59c3c631572e859cbZZV05c6d4D637ad496d67b04ea8b0553ae4e1454933d27caf=${token}"
+      href="${BASE_URL}/passwordChange?3c59c3c631572e859cbZZV05c6d4D637ad496d67b04ea8b0553ae4e1454933d27caf=${token}"
       target="_blank"
     >Reset Password</a>
     <p>If the button above does not work, copy and paste the following link into your browser:</p>
     <p>
-      <a href="https://o-post.vercel.app/passwordChange?3c59c3c631572e859cbZZV05c6d4D637ad496d67b04ea8b0553ae4e1454933d27caf=${token}" target="_blank">
-        https://o-post.vercel.app/passwordChange?3c59c3c631572e859cbZZV05c6d4D637ad496d67b04ea8b0553ae4e1454933d27caf=${token}
+      <a href="${BASE_URL}/passwordChange?3c59c3c631572e859cbZZV05c6d4D637ad496d67b04ea8b0553ae4e1454933d27caf=${token}" target="_blank">
+        ${BASE_URL}/passwordChange?3c59c3c631572e859cbZZV05c6d4D637ad496d67b04ea8b0553ae4e1454933d27caf=${token}
       </a>
     </p>
     <h4> If you Did'nt  Request this Action, Please ignore this email </h4>

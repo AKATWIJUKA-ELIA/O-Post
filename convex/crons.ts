@@ -3,6 +3,7 @@ import { v } from "convex/values";
 import { cronJobs } from "convex/server";
 import { internal, api } from "./_generated/api";
 import NewsletterEmail from  "../src/EmailTemplates/Newsletter";
+import { BASE_URL } from "../src/lib/urls"
 
 
 export const fetchDueNewsletters = internalQuery({
@@ -44,7 +45,7 @@ export const sendScheduledNewsletters = internalAction({
       // Send to each recipient
                         for (const recipient of newsletter.receipients) {
                                 const html = NewsletterEmail(newsletter.title, newsletter.content);
-                                const response = await fetch('https://o-post.vercel.app/api/send-email', {
+                                const response = await fetch(`${BASE_URL}/api/send-email`, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({

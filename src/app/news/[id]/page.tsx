@@ -15,6 +15,7 @@ import Lodear from "@/components/Loader/loader"
 import { CommentSection } from "@/components/CommentSection/Comments"
 import { useAppSelector } from "@/hooks"
 import {handleShare} from "@/lib/utils"
+import { BASE_URL } from "@/lib/urls"
 
 const relatedArticles = [
   {
@@ -94,7 +95,7 @@ export default function NewsArticlePage({ params }: PageProps) {
             <div className="flex items-center gap-2">
              
               <Button variant="outline" size="sm"
-              onClick={() => sharePost(`https://o-post.vercel.app/news/${id}`, article.title)} 
+              onClick={() => sharePost(`${BASE_URL}/news/${id}`, article.title)} 
                 className="gap-2 bg-transparent rounded-2xl transition-colors duration-200
                  hover:bg-blue/10 hover:border-blue hover:text-blue hover:cursor-pointer">
               <Share2 className="h-5 w-5" />
@@ -167,7 +168,7 @@ export default function NewsArticlePage({ params }: PageProps) {
         <CommentSection postId={article?._id} userId={user?.User_id as Id<"users">} />
 
         {/* Share Section */}
-        <div className="mb-12"  onClick={() => sharePost(`https://o-post.vercel.app/news/${id}`, article.title)}  >
+        <div className="mb-12"  onClick={() => sharePost(`${BASE_URL}/news/${id}`, article.title)}  >
           <h3 className="mb-4 text-lg font-semibold text-blue">Share this article</h3>
           <div className="flex flex-wrap gap-3">
             <Button variant="outline" size="sm" 
