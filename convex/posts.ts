@@ -128,10 +128,10 @@ export const CreatePost = mutation({
                                         postId: args.postId,
                                         type: "upvote",
                                 })
-                        return {success:true,message:"Post updated successfully",status:200,post:updatedPost};
+                       return {success:true,message:"Post updated successfully",status:200,post:updatedPost};
                                 
                         }
-                        return { success: false, message: "User has already liked this post", status: 400, post: null };
+                        return { success: false, message: "you have already liked/disliked this post", status: 400, post: null };
                        
                 }
         })

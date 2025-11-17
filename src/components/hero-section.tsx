@@ -73,10 +73,7 @@ export function HeroSection() {
                 className="object-cover transition duration-700 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-              <div className="absolute top-3 left-4 bg-blue rounded-3xl p-6 flex flex-wrap items-center gap-3 text-xs text-slate-200">
-                  
-                 
-                </div>
+              
                 <Badge variant="outline" className="absolute top-3 left-4 bg-blue rounded-3xl p-3 flex flex-wrap items-center gap-3 text-xs text-slate-200 border-white/40  ">
                     {mainPost.category}
                      <span className="text-white/70">By {author?.username ?? "Editorial Team"}</span>
@@ -117,9 +114,6 @@ export function HeroSection() {
                 <p className="text-sm uppercase tracking-[0.2em] text-white/50">In case you missed it</p>
                 <h2 className="text-2xl font-semibold text-white">Latest spotlight</h2>
               </div>
-              <Link href="/news" className="text-sm font-semibold text-amber-300 hover:text-white">
-                View all
-              </Link>
             </div>
 
             <div className="space-y-4">

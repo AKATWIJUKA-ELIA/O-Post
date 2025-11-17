@@ -109,7 +109,7 @@ export function CategoryGrid() {
             </p>
           </div>
           <Link
-            href="/news"
+            href="/"
             className="inline-flex items-center gap-2 rounded-full border border-white/30 px-5 py-2 text-sm font-semibold text-white transition hover:border-white hover:bg-white/10"
           >
             Latest editions

@@ -12,57 +12,16 @@ import { PostWithAuthor, User } from "@/lib/types"
 import { Id } from "../../convex/_generated/dataModel"
 import { Clock } from "lucide-react"
 
-const newsItems = [
-  {
-    title: "Senate Passes Landmark Infrastructure Bill",
-    time: "2 hours ago",
-    category: "Politics",
-  },
-  {
-    title: "Tech Giants Announce Joint Sustainability Initiative",
-    time: "4 hours ago",
-    category: "Technology",
-  },
-  {
-    title: "Olympic Committee Reveals 2028 Games Schedule",
-    time: "5 hours ago",
-    category: "Sports",
-  },
-  {
-    title: "New Study Links Diet to Mental Health Outcomes",
-    time: "7 hours ago",
-    category: "Health",
-  },
-  {
-    title: "Central Bank Announces Interest Rate Decision",
-    time: "9 hours ago",
-    category: "Business",
-  },
-  {
-    title: "Archaeological Discovery Rewrites Ancient History",
-    time: "11 hours ago",
-    category: "Science",
-  },
-]
 
 export function LatestNews() {
         const { data:posts, } = useGetAllPosts();
                 const mainPost = posts && posts.length > 0 ? posts[0] : null;
                 const [Author, setAuthor] = useState<User|null>(null);
-                  const [PostaWithAuthors, setPostsWithAuthors] = useState<PostWithAuthor[]>([]);
+                  const [PostsWithAuthors, setPostsWithAuthors] = useState<PostWithAuthor[]>([]);
 
   useEffect(() => {
     if (posts) {
-      const fetchAuthors = async () => {
-        const postsWithAuthors = await Promise.all(
-          posts.map(async (post) => {
-            const authorResult = await getUserById(post.authorId);
-            return { ...post, author: authorResult.user ?? null };
-          })
-        );
-        setPostsWithAuthors(postsWithAuthors);
-      };
-      fetchAuthors();
+      setPostsWithAuthors(posts);
     }
   }, [posts]);
         
@@ -82,7 +41,7 @@ export function LatestNews() {
         <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-12">Other Updates</h2>
 
         <div className="max-w-4xl mx-auto space-y-6">
-          {PostaWithAuthors.map((item, index) => (
+          {PostsWithAuthors.map((item, index) => (
             <a
               key={index}
               href={`/news/${item._id}`}

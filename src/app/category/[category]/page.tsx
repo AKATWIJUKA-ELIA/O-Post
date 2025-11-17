@@ -93,7 +93,7 @@ export default function CategoryPage({ params }: PageProps) {
             </Link>
           </Button>
           <Button asChild className="rounded-full">
-            <Link href="/news">Browse all news</Link>
+            <Link href="/">Browse all news</Link>
           </Button>
         </div>
       </section>
@@ -101,10 +101,19 @@ export default function CategoryPage({ params }: PageProps) {
   }
 
   return (
-    <div className="bg-gradient-to-b from-slate-950 via-slate-900 to-background text-white relative">
+    <div className="bg-gradient-to-b from-slate-950 via-slate-900 to-background text-white ">
         
-      <section className="relative overflow-hidden py-16">
-        <Image src={filteredPosts[0].postImage||""} width={100} height={100} alt=""  className={`absolute inset-0 object-cover  flex`} />
+      <section className="relative overflow-hidden py-16 bg-green-500 "
+      style={
+        {
+                backgroundImage:`url("${filteredPosts[0].postImage||""}")`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+        }
+      }
+      > 
+      <div className="absolute  inset-0 bg-blue/50" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.08),_transparent_50%)]" aria-hidden="true" />
         <div className="relative container mx-auto px-4 sm:px-6 lg:px-8">
           <Badge variant="secondary" className="mb-4 bg-white/10 text-white">
@@ -135,7 +144,7 @@ export default function CategoryPage({ params }: PageProps) {
                 </Link>
               </Button>
               <Button asChild className="rounded-full bg-white text-slate-900 hover:bg-slate-100">
-                <Link href="/news">
+                <Link href="/">
                   Latest news <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
@@ -146,31 +155,7 @@ export default function CategoryPage({ params }: PageProps) {
 
       <section className="relative -mt-10 rounded-t-[32px] bg-background px-4 py-10 shadow-2xl sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
-          <div className="mb-8 flex flex-col gap-4 rounded-3xl border border-border/60 bg-card/70 p-4 shadow-sm md:flex-row md:items-center md:justify-between">
-            <div className="flex flex-1 items-center gap-3 rounded-2xl border border-border bg-background px-4">
-              <Search className="h-4 w-4 text-muted-foreground" />
-              <Input
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder={`Search within ${displayCategory}`}
-                className="border-0 bg-transparent shadow-none focus-visible:ring-0"
-              />
-            </div>
-            <div className="flex items-center gap-3">
-              <Select value={sort} onValueChange={(value: "latest" | "oldest") => setSort(value)}>
-                <SelectTrigger className="w-40 rounded-2xl border-border">
-                  <SelectValue placeholder="Sort" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="latest">Latest first</SelectItem>
-                  <SelectItem value="oldest">Oldest first</SelectItem>
-                </SelectContent>
-              </Select>
-              <Button variant="outline" className="rounded-2xl border-border text-muted-foreground" disabled>
-                <SlidersHorizontal className="mr-2 h-4 w-4" /> Filters
-              </Button>
-            </div>
-          </div>
+         
 
           {spotlight && (
             <article className="mb-10 grid gap-6 rounded-3xl border border-border/60 bg-card/80 p-6 shadow-xl lg:grid-cols-[1.6fr_1fr]">

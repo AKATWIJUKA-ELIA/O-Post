@@ -54,12 +54,12 @@ export function FeaturedStories() {
             <p className="text-sm uppercase tracking-[0.4em] text-muted-foreground">Daily brief</p>
             <h2 className="font-serif text-3xl font-bold tracking-tight text-foreground md:text-4xl">Featured stories</h2>
           </div>
-          <Button variant="ghost" asChild className="rounded-full">
+          {/* <Button variant="ghost" asChild className="rounded-full">
             <Link href="/news" className="inline-flex items-center gap-2">
               View all reports
               <ArrowRight className="h-4 w-4" />
             </Link>
-          </Button>
+          </Button> */}
         </div>
 
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]">

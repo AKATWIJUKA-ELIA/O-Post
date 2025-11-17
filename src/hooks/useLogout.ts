@@ -30,7 +30,7 @@ const useLogout = () => {
         }
         
   const logoutAndClearUser = async () => {
-    await dispatch(DeleteUser());
+    dispatch(DeleteUser());
     return LogOut();
   };
 
