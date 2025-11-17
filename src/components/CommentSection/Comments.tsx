@@ -58,6 +58,11 @@ useEffect(()=>{
     e.preventDefault()
       setIsSubmitting(true)
     if (!newComment.trim()) return
+    if(!userId){
+        setNotification({status:"info",message:"Please login to comment"})
+        setIsSubmitting(false)
+        return;
+    }
     await commentOnPost(postId as Id<"posts"> , userId, newComment).then((response)=>{
         if(response.success){
                 setNotification({status:"success",message:"Comment added successfully"})
