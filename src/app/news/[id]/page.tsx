@@ -40,7 +40,6 @@ export default function NewsArticlePage({ params }: PageProps) {
   const { id } = params
   const { data: article } = useGetPostById(id as Id<"posts">)
   const [Author, setAuthor] = useState<User | null>(null)
-  const [isCopyingLink, setIsCopyingLink] = useState(false)
   const { likePost, disLikePost } = useInteractWithPost()
   const user = useAppSelector((state) => state.user.user)
   const { data: relatedArticles, loading } = useGetPostsByCategory(article?.category || "")
@@ -63,13 +62,6 @@ export default function NewsArticlePage({ params }: PageProps) {
     return Math.max(3, Math.ceil(words / 200))
   }, [article?.content])
 
-  const articleParagraphs = useMemo(() => {
-    if (!article?.content) return []
-    return article.content
-      .split(/\n{2,}/)
-      .map((para) => para.trim())
-      .filter(Boolean)
-  }, [article?.content])
 
   const filteredRelated = useMemo(() => {
     if (!relatedArticles || !article?._id) return []
@@ -101,29 +93,10 @@ export default function NewsArticlePage({ params }: PageProps) {
   }
 
   const sharePost = (link: string, name: string) => {
-    handleShare(link, name)
+    return handleShare(link, name)
   }
 
-  const handlePlatformShare = (url: string) => {
-    if (!url) return
-    window.open(url, "_blank", "noopener,noreferrer")
-  }
-
-  const handleCopyLink = async () => {
-    try {
-      setIsCopyingLink(true)
-      if (typeof navigator !== "undefined" && navigator.clipboard) {
-        await navigator.clipboard.writeText(articleUrl)
-        setNotification({ status: "success", message: "Article link copied" })
-      } else {
-        setNotification({ status: "error", message: "Clipboard permissions denied" })
-      }
-    } catch (error) {
-      setNotification({ status: "error", message: "Unable to copy link" })
-    } finally {
-      setIsCopyingLink(false)
-    }
-  }
+ 
 
   if (!article)
     return (
