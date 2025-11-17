@@ -1,4 +1,5 @@
 import { User } from "@/lib/types"
+import { BASE_URL } from "@/lib/urls"
 const currentYear = new Date().getFullYear()
 export const WelcomeEmail = (user:User,token:string)=>{
         return `<!DOCTYPE html>
@@ -119,7 +120,7 @@ export const WelcomeEmail = (user:User,token:string)=>{
                             </p>
 
                             <p style="text-align: center;">
-                                <a class="button" href="https://o-post.vercel.app/api/verifyaccount?k9m3p7q2r8t4v1w6x5y9z2a8b4c6d1e7f3g9h2j5k8m4n6p1q7r3t9u2v5w8x4y6z3a9b2c7d1e4f8g6h2j9k5m3=${token}">
+                                <a class="button" href="${BASE_URL}/api/verifyaccount?k9m3p7q2r8t4v1w6x5y9z2a8b4c6d1e7f3g9h2j5k8m4n6p1q7r3t9u2v5w8x4y6z3a9b2c7d1e4f8g6h2j9k5m3=${token}">
                                     Verify Email
                                 </a>
                             </p>

@@ -5,6 +5,7 @@ import { Post } from "@/lib/types";
 import { useSendMail } from "./useSendMail";
 import { NewPostPublishedEmail } from "@/EmailTemplates/NewPostPublished";
 import { getSubscribers } from "@/lib/convex";
+import { BASE_URL } from "@/lib/urls";
 
 const useCreatePost = () => {
         const create = useMutation(api.posts.CreatePost);
@@ -28,7 +29,7 @@ const useCreatePost = () => {
                 const subscribers = await getSubscribers();
                 if(subscribers.subscribers){
                 const origin = (typeof window !== "undefined" && window.location?.origin) ? window.location.origin : "";
-                const postUrl = response?.post ? `https://o-post.vercel.app/news/${response.post}` : "#";
+                const postUrl = response?.post ? `${BASE_URL}/news/${response.post}` : "#";
                 for(const subscriber of subscribers?.subscribers){
                         await sendEmail(
                                 subscriber.email,

@@ -192,9 +192,9 @@ const handlePassword2Change = (e: React.ChangeEvent<HTMLInputElement>)=>{
                                 passwordHash: formdata.password
                         })
 
-                        if(!data.success){
+                        if(!data?.success){
                                 setIsSubmitting(false);
-                                setSubmittingError(data.message)
+                                setSubmittingError(data?.message||"Something went wrong");
                                 return
                         }
                         setCreated(true)
