@@ -4,6 +4,7 @@ import {v} from "convex/values"
 import { ConvexError } from "convex/values";
 import { api } from "../convex/_generated/api";
 import bcrypt from "bcryptjs";
+import { Id } from "./_generated/dataModel";
 
 type Response = {
   success: boolean;
@@ -184,7 +185,7 @@ export const GetUserByTokenAction = action({
 
                     return {
                         ...Customer,
-                        profilePicture: await ctx.storage.getUrl(Customer?.profilePicture||""),
+                        profilePicture: await ctx.storage.getUrl(Customer?.profilePicture as Id<"_storage">),
                     };
                     },
                     })
