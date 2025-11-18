@@ -30,12 +30,29 @@ import { handleShare } from "@/lib/utils"
 import { BASE_URL } from "@/lib/urls"
 import useGetPostsByCategory from "@/hooks/useGetPostsByCategory"
 import { useNotification } from "@/app/NotificationContext"
-
+import {getPostById } from "@/lib/convex"
+import { Metadata } from 'next';
 interface PageProps {
   params: {
     id: string;
   };
 }
+//  export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+//  const { id } = params
+//   const news = await getPostById(id as Id<"posts">);
+//                         return {
+//                                 title: news.post?.title||"O-Media",
+//                                 description: news.post?.excerpt || "",
+//                                 openGraph: {
+//                                 title: news.post?.title,
+//                                 description: news.post?.excerpt || "",
+//                                 images: [news.post?.postImage|| '/default-og-image.jpg'],
+//                                 url: `${BASE_URL}/news/${news.post?._id}`,
+//                                 type: "website"
+//                                 }
+//                                 }
+//                         };
+
 export default function NewsArticlePage({ params }: PageProps) {
   const { id } = params
   const { data: article } = useGetPostById(id as Id<"posts">)
