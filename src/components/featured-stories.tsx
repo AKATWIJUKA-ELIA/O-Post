@@ -22,13 +22,17 @@ export function FeaturedStories() {
 
   useEffect(() => {
     if (!posts) return
-     setWithAuthors(posts)
+    const randomizedPosts = posts
+      .map((post) => ({ post, sort: Math.random() })) .reverse()
+      .sort((a, b) => a.sort - b.sort)
+      .map(({ post }) => post)
+     setWithAuthors(randomizedPosts)
   }, [posts])
 
   const leadStory = withAuthors[1] ?? withAuthors[0]
   const supportingStories = useMemo(() => {
     const trimmed = leadStory ? withAuthors.filter((story) => story._id !== leadStory._id) : withAuthors
-    return trimmed.slice(0, 6)
+    return trimmed
   }, [withAuthors, leadStory])
 
   if (loading) {
@@ -85,6 +89,9 @@ export function FeaturedStories() {
                     <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">{story.category}</p>
                     <h4 className="font-semibold text-foreground transition group-hover:text-primary">
                       {truncateString(story.title, 110)}
+                    </h4>
+                    <h4 className=" text-foreground transition group-hover:text-primary">
+                      {truncateString(story.content, 110)}
                     </h4>
                   </div>
                   <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
@@ -149,7 +156,7 @@ export function FeaturedStories() {
 
         {/* Secondary grid */}
         <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {supportingStories.slice(0, 6).map((story) => (
+          {supportingStories.slice(4, 10).map((story) => (
             <article
               key={`secondary-${String(story._id)}`}
               className="group rounded-2xl border border-border/50 bg-card/70 p-4 shadow-sm transition hover:-translate-y-1 hover:border-primary/50"
