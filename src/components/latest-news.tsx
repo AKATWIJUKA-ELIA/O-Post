@@ -21,7 +21,7 @@ export function LatestNews() {
 
   useEffect(() => {
     if (posts) {
-      setPostsWithAuthors(posts);
+      setPostsWithAuthors(posts.toReversed().slice(0, 7));
     }
   }, [posts]);
         
