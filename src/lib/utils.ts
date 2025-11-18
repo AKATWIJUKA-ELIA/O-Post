@@ -32,7 +32,7 @@ export function currentYear(): number {
           navigator
             .share({
               title: `Check out  ${name} on O-Post!`,
-              text: "Hey, take a look at this:",
+              text: `Hey, take a look at: ${name}`,
               url: link,
             })
             .then(() => console.log("Shared successfully"))

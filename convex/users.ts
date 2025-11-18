@@ -185,7 +185,7 @@ export const GetUserByTokenAction = action({
 
                     return {
                         ...Customer,
-                        profilePicture: await ctx.storage.getUrl(Customer?.profilePicture as Id<"_storage">)||"",
+                        profilePicture:Customer?.profilePicture ? await ctx.storage.getUrl(Customer?.profilePicture as Id<"_storage">) : "",
                     };
                     },
                     })

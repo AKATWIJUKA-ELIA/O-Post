@@ -125,3 +125,11 @@ export const deleteNewsletter = async (id: Id<"NewsLetterStorage">) => {
         return { success: false as const, message: e instanceof Error ? e.message : "Failed to delete newsletter" };
         }
 }
+export async function getPostById(id:Id<"posts">) {
+        try {
+        const post = await convex.query(api.posts.GetPostById, { postId:id });
+        return { success: true, post: post.post };
+        } catch (e) {
+        return { success: false, message: e instanceof Error ? e.message : "error fetching post" };
+        }
+}
