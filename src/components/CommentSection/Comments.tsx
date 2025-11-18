@@ -120,7 +120,7 @@ useEffect(()=>{
               <Avatar className="h-10 w-10">
                 <AvatarImage src={comment.commentor?.profilePicture || "/placeholder.svg"} alt={Author?.username} />
                 <AvatarFallback>
-                  {comment.commentor?.username.slice(0,2)
+                  {comment.commentor?.username && comment.commentor?.username.slice(0,2)
                     .split(" ")
                     .map((n) => n[0])
                     .join("")}
