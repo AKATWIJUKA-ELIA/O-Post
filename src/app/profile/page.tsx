@@ -156,56 +156,9 @@ const handleCancel=()=>{
     stats: {
       articles: 24,
       comments: 156,
-      saved: 89,
+      saved: 0,
     },
   }
-
-  const recentActivity = [
-    {
-      id: 1,
-      type: "comment",
-      title: "The Future of AI in Journalism",
-      date: "2 hours ago",
-      excerpt: "Great insights on how AI is transforming newsrooms...",
-    },
-    {
-      id: 2,
-      type: "saved",
-      title: "Climate Change: A Global Perspective",
-      date: "1 day ago",
-    },
-    {
-      id: 3,
-      type: "comment",
-      title: "Breaking: Tech Industry Layoffs Continue",
-      date: "3 days ago",
-      excerpt: "This is concerning for the industry as a whole...",
-    },
-  ]
-
-  const savedArticles = [
-    {
-      id: 1,
-      title: "The Rise of Renewable Energy",
-      category: "Science",
-      date: "Mar 15, 2024",
-      image: "/renewable-energy-solar-panels.png",
-    },
-    {
-      id: 2,
-      title: "Global Markets React to Economic Shifts",
-      category: "Business",
-      date: "Mar 12, 2024",
-      image: "/stock-market-trading-floor.png",
-    },
-    {
-      id: 3,
-      title: "Innovations in Healthcare Technology",
-      category: "Health",
-      date: "Mar 10, 2024",
-      image: "/medical-technology-healthcare.jpg",
-    },
-  ]
 
 
 
@@ -281,7 +234,7 @@ const handleCancel=()=>{
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-4 sm:gap-6 mt-8 sm:mt-12">
+          {/* <div className="grid grid-cols-3 gap-4 sm:gap-6 mt-8 sm:mt-12">
             <Card className="p-4 sm:p-6 text-center hover:shadow-md transition-shadow">
               <div className="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold text-foreground">
                 {userData.stats.articles}
@@ -300,7 +253,7 @@ const handleCancel=()=>{
               </div>
               <div className="text-xs sm:text-sm text-muted-foreground mt-1 sm:mt-2">Saved</div>
             </Card>
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -308,7 +261,7 @@ const handleCancel=()=>{
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
           {/* Recent Activity */}
-          <div className="lg:col-span-2">
+          {/* <div className="lg:col-span-2">
             <h2 className="text-2xl sm:text-3xl font-serif font-bold text-foreground mb-6 sm:mb-8">Recent Activity</h2>
             <div className="space-y-4 sm:space-y-6">
               {recentActivity.map((activity) => (
@@ -338,10 +291,10 @@ const handleCancel=()=>{
                 </Card>
               ))}
             </div>
-          </div>
+          </div> */}
 
           {/* Saved Articles */}
-          <div>
+          {/* <div>
             <h2 className="text-2xl sm:text-3xl font-serif font-bold text-foreground mb-6 sm:mb-8">Saved Articles</h2>
             <div className="space-y-4 sm:space-y-6">
               {savedArticles.map((article) => (
@@ -369,7 +322,7 @@ const handleCancel=()=>{
                 View All Saved Articles
               </Button>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
