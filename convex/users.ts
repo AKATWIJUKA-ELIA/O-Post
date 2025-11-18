@@ -180,7 +180,11 @@ export const GetUserByTokenAction = action({
         export const GetUserById = query({
         args:{id: v.id("users")},
               handler: async (ctx, args) => {
-                     const Customer = await ctx.db.query("users").filter((q)=> q.eq(q.field("_id"), args.id)).first() 
-                    return Customer
+                     const Customer = await ctx.db.query("users").filter((q)=> q.eq(q.field("_id"), args.id)).first()
+
+                    return {
+                        ...Customer,
+                        profilePicture: await ctx.storage.getUrl(Customer?.profilePicture||""),
+                    };
                     },
                     })
