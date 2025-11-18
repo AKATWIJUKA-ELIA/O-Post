@@ -34,17 +34,17 @@ export type DwonloadPost = {
 }
 
 export interface User {
-        _id: Id<"users">,
-        username: string,
-        email: string,
-        passwordHash: string,
+        _id?: Id<"users">|undefined,
+        username?: string|undefined,
+        email?: string|undefined,
+        passwordHash?: string|undefined,
         phoneNumber?: string,
-        profilePicture?: string,
-        isVerified: boolean | false,
-        role: string|"",
-        reset_token?:string
-        reset_token_expires:number,
-        updatedAt: number,
+        profilePicture?: string|null,
+        isVerified?: boolean | false|undefined,
+        role?: string|""|undefined,
+        reset_token?:string|undefined,
+        reset_token_expires?:number|undefined,
+        updatedAt?: number|undefined,
         lastLogin?: number,
         _creationTime?:number,
 }

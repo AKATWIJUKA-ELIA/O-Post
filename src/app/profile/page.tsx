@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Mail,  Calendar, Bookmark, MessageSquare, Settings,LayoutDashboardIcon } from "lucide-react"
+import { Mail,  Calendar, Bookmark, MessageSquare, Settings,LayoutDashboardIcon, PenBoxIcon } from "lucide-react"
 import Link from "next/link"
 import { useUser } from "@/hooks/useUser"
 import type { Id } from "../../../convex/_generated/dataModel"
@@ -12,12 +12,47 @@ import type { UserProfile } from "@/lib/types"
 import { getUserById } from "@/lib/convex"
 import { User } from "@/lib/types"
 import { formatDate } from "@/lib/utils"
+import { Label } from "@/components/ui/label"
+import { useNotification } from "../NotificationContext"
+import { useUpdateUser } from "@/hooks/useUpdateUser"
+import { useMutation } from "convex/react"
+import { api } from "../../../convex/_generated/api"
 
 export default function ProfilePage() {
   const [user, setUser] = useState<UserProfile | null>()
         const [profile, setprofile] = useState<User|null>(null);
+        const [profilepreview, setprofilepreview] = useState<string|null>(null);
+        const [profileUpload, setprofileUpload] = useState<File|null>(null);
+        const [username, setusername] = useState<string|null>(null);
+        const [editUserName, setEditUserName] = useState<boolean>(false);
+        const {setNotification} = useNotification();
+        const {UpdateUser} = useUpdateUser();
+        const [updatingProfile, setUpdatingProfile] = useState<boolean>(false);
+          const generateUploadUrl = useMutation(api.posts.generateUploadUrl);
 
- 
+          const handleUpload = async (file:File|null) => {
+        if(!file) {
+                setNotification({
+                        status: 'info',
+                        message: 'No file selected for upload.',
+                })
+                return
+         };
+          const uploadUrl = await generateUploadUrl();
+                        const res = await fetch(uploadUrl,
+                        {
+                                method:"post",
+                                headers:{"Content-Type": file.type },
+                                body: file
+                        }
+                )
+                if(!res.ok){
+                        throw new Error("Upload failed, Are you connected to the internet?");
+                }
+                const { storageId } = await res.json();
+                        return storageId;
+
+}
   useEffect(()=>{(async()=>{
           const{success,session}=await useUser();
           if(success&&session){
@@ -39,6 +74,75 @@ export default function ProfilePage() {
                                                         }
                                                         fetchAuthor();
                                                   },[user?.userId])
+        
+
+
+          const handleImageChange = () => {
+        const fileInput = document.createElement("input")
+        fileInput.type = "file"
+        fileInput.accept = "image/*"
+        fileInput.onchange = () => {
+          const file = fileInput.files ? fileInput.files[0] : null
+                if (!file) {
+                        setNotification({
+                                status: 'info',
+                                message: 'No file selected.',
+                        })
+                }
+
+                if (file && file.size <= 3 * 1024 * 1024) {
+                                setprofilepreview(URL.createObjectURL(file))
+                                setprofileUpload(file)
+                                return
+                        
+                
+                }
+                else {
+                        setNotification({
+                                status: 'error',
+                                message: `File ${file?.name} size exceeds 3MB limit.`,
+                        })
+                }
+        }
+          fileInput.click();
+} 
+const handleCancel=()=>{
+        setEditUserName(false);
+        setusername(null);
+        setprofilepreview(null);
+        setprofileUpload(null);
+}
+        const handleUpdateProfile=async()=>{
+                setUpdatingProfile(true);
+                if(!profile){
+                        setNotification({
+                                status: 'error',
+                                message: 'User profile not found.',
+                        })
+                        return;
+                }
+                const storageId = profileUpload ? await handleUpload(profileUpload) : null;
+                const response = await UpdateUser({
+                        id: profile._id as Id<"users">,
+                        username: username || profile.username||"",
+                        profileImage: storageId
+                });
+                if (!response.success) {
+                        setNotification({
+                                status: 'error',
+                                message: response.message||'Failed to update profile.',
+                        });
+                        return;
+                }
+                setNotification({
+                        status: 'success',
+                        message: 'Profile updated successfully.',
+                });
+                setEditUserName(false);
+                setusername(null);
+                setprofilepreview(null);
+                setprofileUpload(null);
+        };
 
   // Mock user data - replace with real data from your backend
   const userData = {
@@ -111,16 +215,37 @@ export default function ProfilePage() {
       <div className="bg-gradient-to-br from-primary/5 to-accent/5 border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-8">
-            <Avatar className="h-24 w-24 sm:h-32 sm:w-32 border-4 border-background shadow-lg">
-              <AvatarImage src={userData.avatar || "/placeholder.svg"} alt={profile?.username} />
-              <AvatarFallback className="text-8xl  font-serif font-bold items-center-safe">{profile?.username.slice(0,1)}</AvatarFallback>
+            <Avatar className="relative h-24 w-24 sm:h-32 sm:w-32 border-4 border-background shadow-lg">
+              <AvatarImage src={profilepreview || profile?.profilePicture || "/placeholder.svg"} alt={profile?.username} />
+              <AvatarFallback className="text-8xl  font-serif font-bold items-center-safe">{profile?.username && profile?.username.slice(0,1)}</AvatarFallback>
+              <div className="absolute top-0 bottom-0 right-0 left-0 flex items-center justify-center
+               bg-blue/40 hover:bg-blue/50 rounded-full p-2 border-2 border-background
+                hover:cursor-pointer"
+                onClick={()=>handleImageChange()}
+                >
+              <PenBoxIcon className="hover:cursor-pointer text-gray-400"   />
+              </div>
             </Avatar>
-            <div className="flex-1 w-full">
+            <div className="flex-1 w-full ">    
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                 <div>
-                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-foreground mb-2">
-                    {profile?.username || "User"}
+                  <h1 className=" flex items-center gap-3 text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-foreground mb-2">
+                    {profile?.username || "User"} <PenBoxIcon className="hover:cursor-pointer" onClick={()=>setEditUserName(true)}  />
                   </h1>
+
+                  { editUserName && <div className="flex  " >
+                        <Label htmlFor="username" className="mr-2" >New Username:</Label>
+                        <input type="text" 
+                        name="username" 
+                        id="username" 
+                        onChange={(e)=>setusername(e.target.value)}
+                        value={username||""}
+                        placeholder={profile?.username||"Username"}
+                  className="border flex border-border rounded-3xl px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue focus:border-transparent"
+                  />
+                        <Button className="ml-2 rounded-2xl bg-red" onClick={()=>handleCancel()} >Cancel</Button>
+                  </div>}
+
                   <p className="text-base sm:text-lg text-muted-foreground mb-3 sm:mb-4">{profile?.username}</p>
                   <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-sm text-muted-foreground">
                     <div className="flex items-center gap-1.5">
@@ -132,6 +257,11 @@ export default function ProfilePage() {
                       <span>Joined {formatDate(profile?._creationTime||0)}</span>
                     </div>
                   </div>
+                  {(editUserName || !!profilepreview) && (
+                    <Button className="ml-2 mt-5 rounded-2xl bg-blue" onClick={() => handleUpdateProfile()}>
+                      {updatingProfile ? "Updating..." : "Update"}
+                    </Button>
+                  )}
                 </div>
                 {user?.role==="admin"?(
                         <Link href="/admin" className="hover:cursor-pointer">
