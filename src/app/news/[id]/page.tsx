@@ -37,21 +37,21 @@ interface PageProps {
     id: string;
   };
 }
- export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
- const { id } = params
-  const news = await getPostById(id as Id<"posts">);
-                        return {
-                                title: news.post?.title||"O-Media",
-                                description: news.post?.excerpt || "",
-                                openGraph: {
-                                title: news.post?.title,
-                                description: news.post?.excerpt || "",
-                                images: [news.post?.postImage|| '/default-og-image.jpg'],
-                                url: `${BASE_URL}/news/${news.post?._id}`,
-                                type: "website"
-                                }
-                                }
-                        };
+//  export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+//  const { id } = params
+//   const news = await getPostById(id as Id<"posts">);
+//                         return {
+//                                 title: news.post?.title||"O-Media",
+//                                 description: news.post?.excerpt || "",
+//                                 openGraph: {
+//                                 title: news.post?.title,
+//                                 description: news.post?.excerpt || "",
+//                                 images: [news.post?.postImage|| '/default-og-image.jpg'],
+//                                 url: `${BASE_URL}/news/${news.post?._id}`,
+//                                 type: "website"
+//                                 }
+//                                 }
+//                         };
 
 export default function NewsArticlePage({ params }: PageProps) {
   const { id } = params
