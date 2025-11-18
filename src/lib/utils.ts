@@ -31,7 +31,7 @@ export function currentYear(): number {
         if (navigator.share) {
           navigator
             .share({
-              title: `"Check out  ${name} on O-Post!`,
+              title: `Check out  ${name} on O-Post!`,
               text: "Hey, take a look at this:",
               url: link,
             })
