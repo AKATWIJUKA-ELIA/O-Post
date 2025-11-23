@@ -34,7 +34,7 @@ export function HeroSection() {
 
   if (!posts) {
     return (
-      <div className="flex items-center justify-center py-32">
+      <div className="flex items-center justify-center h-screen w-full">
         <Loader />
       </div>
     )
@@ -42,7 +42,7 @@ export function HeroSection() {
 
   if (!mainPost) {
     return (
-      <div className="flex items-center justify-center py-32 text-muted-foreground">
+      <div className="flex items-center justify-center h-screen w-full text-muted-foreground">
         No stories to display yet.
       </div>
     )
