@@ -49,9 +49,9 @@ const ForgotPassword=({
         }
 
   return (
-    <form onSubmit={HandleSubmit} className={cn("flex flex-col gap-6 border rounded-2xl p-6 shadow bg-white/70 ", className)} {...props}>
+    <form onSubmit={HandleSubmit} className={cn("flex flex-col gap-6", className)} {...props}>
       <div className="flex flex-col items-center gap-2 text-center ">
-        <h1 className="text-2xl font-bold"><span className="text-gold" >Forgot Your </span> Password ? </h1>
+        <h1 className="font-serif text-2xl font-bold">Forgot your password?</h1>
         <p className="text-balance text-sm text-muted-foreground">
           Enter your email below to Reset  your  Password
         </p>
@@ -62,7 +62,7 @@ const ForgotPassword=({
           {SuccessMessage}
         </p>}
       </div>
-      <div className="grid gap-6 border p-6  rounded-2xl shadow-lg dark:bg-black bg-slate-100 ">
+      <div className="grid gap-5">
         <div className="grid gap-2">
           <Label htmlFor="email">Email</Label>
           <Input id="email"
@@ -71,11 +71,11 @@ const ForgotPassword=({
            onChange={(e) =>setEmail(e.target.value)}
             placeholder="m@example.com"
              required 
-             className="rounded-2xl"
+             className=""
              />
         </div>
 
-        <Button type="submit" disabled={Email.length == 0 } className="w-full bg-blue rounded-lg hover:cursor-pointer hover:bg-red text-white" >
+        <Button type="submit" disabled={Email.length == 0 } className="w-full" >
           {IsSubmitting ? "Sending...":"Send Link"}
         </Button>
 

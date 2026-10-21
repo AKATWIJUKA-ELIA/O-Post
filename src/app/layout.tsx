@@ -1,5 +1,5 @@
 import type React from "react"
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Libre_Baskerville, Inter } from "next/font/google"
 // import { Analytics } from "@vercel/analytics/next"
 import ClientProviders from "./Providers"
@@ -9,6 +9,8 @@ import "./styles.css"
 import ConditionalFooter  from "@/components/ConditionalFooter/page"
 import { Header } from "@/components/header"
 import MessagePop from "@/components/MessagePop/page"
+import { BASE_URL } from "@/lib/urls"
+import { SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE } from "@/lib/seo"
 
 const libreBaskerville = Libre_Baskerville({
   weight: ["400", "700"],
@@ -24,9 +26,39 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "The O-Post - Professional News Platform",
-  description: "Stay informed with trusted journalism and in-depth reporting",
-//   generator: "",
+  metadataBase: new URL(BASE_URL),
+  title: {
+    default: `${SITE_NAME} | ${SITE_TAGLINE}`,
+    template: `%s | ${SITE_NAME}`,
+  },
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
+  keywords: ["Uganda news", "news", "politics", "business", "sports", "technology", "culture", "Bugema University", SITE_NAME],
+  publisher: "O-Media",
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    siteName: SITE_NAME,
+    title: `${SITE_NAME} | ${SITE_TAGLINE}`,
+    description: SITE_DESCRIPTION,
+    url: "/",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${SITE_NAME} | ${SITE_TAGLINE}`,
+    description: SITE_DESCRIPTION,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
+  },
+  category: "news",
+}
+
+export const viewport: Viewport = {
+  themeColor: "#c8102e",
 }
 
 export default function RootLayout({

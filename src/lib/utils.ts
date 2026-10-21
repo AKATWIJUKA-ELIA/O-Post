@@ -46,3 +46,20 @@ export function currentYear(): number {
           export const truncateString = (text: string, maxLength: number): string => {
                 return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
         };
+export const formatShortDate = (time: number) => {
+  if (!time) return "N/A";
+  return new Date(time).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+};
+
+export const timeAgo = (time: number) => {
+  if (!time) return "";
+  const diff = Date.now() - time;
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return "Just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  if (days < 7) return `${days}d ago`;
+  return formatShortDate(time);
+};
