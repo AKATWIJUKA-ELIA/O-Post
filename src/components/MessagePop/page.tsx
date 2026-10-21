@@ -1,53 +1,60 @@
 "use client"
 import type React from "react"
+import { useEffect } from "react"
+import { AlertTriangle, CheckCircle2, Info, X, XCircle } from "lucide-react"
+
 import { useNotification } from "@/app/NotificationContext"
-import { IoMdClose } from "react-icons/io";
-import { useEffect } from "react";
 
+const DURATION_MS = 5000
 
-const MessagePop: React.FC= () => {
-        const { notification, setNotification } = useNotification()
-        const isvisible = notification !== null
-        const message = notification?.message || ""
-        const status = notification?.status || ""
-        
-        const onClose = () => {
-        setNotification(null)
-        }
-const handleclose =()=>{
-        onClose()
-}
-useEffect(() => {
-        setTimeout(() => {
-                onClose()
-        }, 5000); 
-}, [message]);
+const STYLES = {
+  success: { icon: CheckCircle2, title: "Success", accent: "bg-emerald-500", iconColor: "text-emerald-600" },
+  error: { icon: XCircle, title: "Error", accent: "bg-crimson", iconColor: "text-crimson" },
+  info: { icon: Info, title: "Notice", accent: "bg-sky-500", iconColor: "text-sky-600" },
+  warning: { icon: AlertTriangle, title: "Warning", accent: "bg-amber-500", iconColor: "text-amber-600" },
+} as const
 
- const notificationColor =(() => {
-        switch (status) {
-            case "success":
-                return "bg-green-100 text-green-800";
-            case "error":
-                return "bg-red-100 text-red-800";
-            case "info":
-                return "bg-blue-100 text-blue-800";
-            case "warning":
-                return "bg-yellow-100 text-yellow-800";
-            default:
-                return "bg-gray-100 text-gray-800";
-        }
- })
+/** Toast for messages set through NotificationContext. Sits above the sticky nav and auto-dismisses. */
+const MessagePop: React.FC = () => {
+  const { notification, setNotification } = useNotification()
 
-  if (!isvisible) return null
+  useEffect(() => {
+    if (!notification) return
+    const timer = setTimeout(() => setNotification(null), DURATION_MS)
+    return () => clearTimeout(timer)
+  }, [notification, setNotification])
+
+  if (!notification) return null
+
+  const style = STYLES[notification.status] ?? STYLES.info
+  const Icon = style.icon
 
   return (
-    <div className={` fixed z-40 top-2 right-4 md:right-2 mt-[8%] rounded-lg flex  w-[90%] md:w-[35%] h-[10%]   overflow-auto overflow-x-hidden ${notificationColor()}`}>
-      <div className={`items-center justify-center my-auto mx-auto  ${notificationColor()} rounded-lg`}>
-      <h1 className="text-xl   text-center"><span className="font-bold" >{status}</span>: {message} </h1>
+    <div
+      role={notification.status === "error" ? "alert" : "status"}
+      aria-live="polite"
+      className="fade-in fixed right-4 top-4 z-[100] w-[calc(100%-2rem)] max-w-sm overflow-hidden rounded-lg border border-border bg-card shadow-2xl"
+    >
+      <div className="flex items-start gap-3 p-4 pr-10">
+        <Icon className={`mt-0.5 h-5 w-5 flex-shrink-0 ${style.iconColor}`} />
+        <div className="min-w-0">
+          <p className="text-sm font-bold text-foreground">{style.title}</p>
+          {notification.message && <p className="mt-0.5 break-words text-sm text-muted-foreground">{notification.message}</p>}
+        </div>
       </div>
-      <button onClick={handleclose} className="absolute top-1 right-2 bg-black/60 p-1 rounded-md hover:text-gray-700">
-        <IoMdClose size={24} fill="red" />
+      <button
+        onClick={() => setNotification(null)}
+        className="absolute right-2 top-2 rounded-md p-1.5 text-muted-foreground transition hover:bg-muted hover:text-foreground"
+        aria-label="Dismiss notification"
+      >
+        <X className="h-4 w-4" />
       </button>
+      {/* Countdown bar; keyed on the notification so it restarts for each new message */}
+      <div
+        key={`${notification.status}-${notification.message}`}
+        className={`h-1 ${style.accent} origin-left`}
+        style={{ animation: `toast-countdown ${DURATION_MS}ms linear forwards` }}
+      />
     </div>
   )
 }

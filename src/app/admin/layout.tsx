@@ -1,6 +1,8 @@
 "use client";
 import { AppSidebar } from "@/adminComponents/app-sidebar";
-import { SidebarProvider,SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { Separator } from "@/components/ui/separator";
+import { usePathname } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useEffect, useState } from "react";
 import { getUserById } from "@/lib/convex";
@@ -8,11 +10,19 @@ import { useUser } from "@/hooks/useUser";
 import { User, UserProfile } from "@/lib/types";
 import { Id } from "../../../convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
-import { LogOut as SignOut } from "lucide-react";
+import { ExternalLink, LogOut as SignOut } from "lucide-react";
 import useLogout from "@/hooks/useLogout"
 import Link from "next/link";
 
-export default function ProfileLayout({
+const PAGE_TITLES: [string, string][] = [
+  ["/admin/create", "Create post"],
+  ["/admin/edit", "Edit post"],
+  ["/admin/update", "Update post"],
+  ["/admin/newsletter", "Newsletter"],
+  ["/admin/subscribers", "Subscribers"],
+]
+
+export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -20,6 +30,8 @@ export default function ProfileLayout({
         const [user, setUser] = useState<UserProfile|null>(null);
         const [Author, setAuthor] = useState<User|null>(null);
         const { LogOut } = useLogout()
+        const pathname = usePathname()
+        const pageTitle = PAGE_TITLES.find(([prefix]) => pathname.startsWith(prefix))?.[1] ?? "Dashboard"
        useEffect(()=>{(async()=>{
                const{success,session}=await useUser();
                if(success&&session){
@@ -49,39 +61,40 @@ export default function ProfileLayout({
   }
          
   return (
-    <div className="flex flex-col h-screen backdrop-blur-2xl">
-        
-        <SidebarProvider >
-        <AppSidebar   />
-      <main className="flex-1 overflow-y-auto">
-        <header className="sticky top-0 z-50 border-b bg-background">
-                <div className="flex justify-between container mx-auto px-4 py-4 bg-blue ">
-                  <div className="flex flex-col " >
-                        <h1 className="text-4xl font-bold text-white "> O-Post Admin </h1>
-                  <p className="text-sm text-gray-500">Manage your news posts</p>
-                  </div>
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset className="min-w-0 bg-[#f4f4f6]">
+        <header className="sticky top-0 z-40 flex h-16 items-center gap-3 border-b border-border bg-background/95 px-4 backdrop-blur sm:px-6">
+          <SidebarTrigger className="-ml-1" />
+          <Separator orientation="vertical" className="h-5" />
+          <div className="min-w-0">
+            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground">O-Post Admin</p>
+            <h1 className="truncate text-base font-bold text-foreground sm:text-lg">{pageTitle}</h1>
+          </div>
 
-                  <div className="flex mt-2 items-center gap-3" >
-                        <Link href="/profile" className="flex items-center gap-2">
-                        <Avatar className="h-10 w-10">
-                                      <AvatarImage src="/abstract-geometric-shapes.png" alt="Your avatar" />
-                                      <AvatarFallback>
-                                        {Author?.username ? Author.username.charAt(0).toUpperCase() : "U"}
-                                      </AvatarFallback>
-                        </Avatar>
-                        </Link>
-                        <Button variant="outline" size="sm" className="text-blue rounded-2xl border-white hover:bg-red hover:text-blue"
-                        onClick={() => handleLogout()}
-                        >
-                                Log Out
-                                <SignOut className="ml-2 h-4 w-4" />
-                        </Button>
-                  </div>
-                </div>
-              </header>
-        <SidebarTrigger className="absolute z-50 bg-dark rounded-full p-3 bg-blue border-2 hover:cursor-pointer border-red text-white dark:bg-blue-800  top-[13%] " />
-        {children}
-      </main>
-      </SidebarProvider>
-    </div>
-  );}
+          <div className="ml-auto flex items-center gap-2 sm:gap-3">
+            <Button asChild variant="outline" size="sm" className="hidden sm:inline-flex">
+              <Link href="/" target="_blank">
+                <ExternalLink className="mr-1.5 h-3.5 w-3.5" /> View site
+              </Link>
+            </Button>
+            <Link href="/profile" className="flex items-center gap-2 rounded-md px-1.5 py-1 transition hover:bg-muted">
+              <Avatar className="h-8 w-8">
+                <AvatarImage src={Author?.profilePicture || undefined} alt="Your avatar" />
+                <AvatarFallback className="bg-crimson text-xs text-white">
+                  {Author?.username ? Author.username.charAt(0).toUpperCase() : "U"}
+                </AvatarFallback>
+              </Avatar>
+              <span className="hidden text-sm font-semibold text-foreground md:inline">{Author?.username}</span>
+            </Link>
+            <Button variant="ghost" size="icon" onClick={() => handleLogout()} aria-label="Log out" title="Log out">
+              <SignOut className="h-4 w-4" />
+            </Button>
+          </div>
+        </header>
+
+        <div className="flex-1 p-4 sm:p-6">{children}</div>
+      </SidebarInset>
+    </SidebarProvider>
+  );
+}

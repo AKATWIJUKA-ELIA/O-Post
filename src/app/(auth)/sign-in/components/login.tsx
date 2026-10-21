@@ -24,8 +24,12 @@ const LoginForm = ({className,...props}:React.ComponentPropsWithoutRef<"form">)=
 const router = useRouter()
 const HandleSubmit = async ( e : React . FormEvent < HTMLFormElement > ) => {
          e.preventDefault (); 
+         // Read from the form so browser autofill (which may not fire onChange) still works
+         const formData = new FormData ( e.currentTarget ) ;
+         const email = String ( formData.get ( "email" ) ?? Email ) ;
+         const password = String ( formData.get ( "password" ) ?? Password ) ;
          setIsSubmitting ( true ) ;
-          try { const Auth = await Authenticate ( Email , Password )
+          try { const Auth = await Authenticate ( email , password )
                 if ( ! Auth ?. success ) {
                          setSubmittingError ( Auth ?. message )
                           setIsSubmitting ( false )
@@ -58,30 +62,29 @@ const HandleSubmit = async ( e : React . FormEvent < HTMLFormElement > ) => {
   return (
     <form onSubmit={HandleSubmit} className={cn("gap-6", className)} {...props}>
       <div className="flex flex-col w-full items-center gap-2 text-center">
-        <h1 className="flex text-xl sm:text-2xl font-bold">
-          <span className="text-gold">Welcome</span> Back{" "}
-        </h1>
+        <h1 className="font-serif text-2xl font-bold sm:text-3xl">Welcome back</h1>
         <p className="flex text-balance text-xs sm:text-sm text-muted-foreground">
           Enter your email below to login to your account
         </p>
         {SubmittingError && SubmittingError.length > 0 && (
-          <p className="text-balance text-xs sm:text-sm text-red-500">{SubmittingError}</p>
+          <p className="text-balance text-xs sm:text-sm text-destructive">{SubmittingError}</p>
         )}
       </div>
 
-      <div className="grid gap-4 sm:gap-6 border px-4 sm:px-6 md:px-10 py-4 sm:py-6 rounded-2xl shadow-lg dark:bg-black bg-slate-100">
+      <div className="mt-6 grid gap-5">
         <div className="grid gap-2">
           <Label htmlFor="email" className="text-sm">
             Email
           </Label>
           <Input
             id="email"
+            name="email"
             type="email"
             value={Email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="m@example.com"
             required
-            className="rounded-xl"
+            className=""
           />
         </div>
         <div className="grid gap-2">
@@ -96,13 +99,14 @@ const HandleSubmit = async ( e : React . FormEvent < HTMLFormElement > ) => {
           <div className="relative">
             <Input
               id="password"
+              name="password"
               type={passwordtype}
               value={Password}
               onChange={(e) => setPassword(e.target.value)}
               maxLength={16}
               minLength={8}
               required
-              className="rounded-xl pr-10"
+              className="pr-10"
             />
             {view ? (
               <IoEye
@@ -119,8 +123,8 @@ const HandleSubmit = async ( e : React . FormEvent < HTMLFormElement > ) => {
         </div>
         <Button
           type="submit"
-          disabled={Email.length < 1 || Password.length < 8}
-          className="w-full bg-blue rounded-xl hover:bg-blue-800 hover:cursor-pointer transition-colors duration-300"
+          disabled={IsSubmitting}
+          className="w-full"
         >
           {IsSubmitting ? (
             <div className="flex gap-2">
@@ -133,9 +137,9 @@ const HandleSubmit = async ( e : React . FormEvent < HTMLFormElement > ) => {
         </Button>
       </div>
 
-      <div className="flex flex-wrap justify-center items-center gap-1 text-center text-xs sm:text-sm">
+      <div className="mt-6 flex flex-wrap items-center justify-center gap-1 border-t border-border pt-6 text-center text-sm">
         <span>Don&apos;t have an account?</span>
-        <Link href="/sign-up" className="underline underline-offset-4">
+        <Link href="/sign-up" className="font-semibold text-primary underline underline-offset-4">
           Sign up
         </Link>
       </div>

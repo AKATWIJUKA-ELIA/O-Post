@@ -216,7 +216,7 @@ clearForm()
   return (
     <form onSubmit={handleSubmit} className={cn("flex flex-col gap-6", className)} {...props}>
       <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="text-3xl font-bold">Welcome to <span className="text-red " >O</span><span className="text-blue">-Post</span> </h1>
+        <h1 className="font-serif text-2xl font-bold sm:text-3xl">Create your account</h1>
         <p className="text-balance text-sm text-muted-foreground">
           Enter your your Details below to create to your account
         </p>
@@ -227,7 +227,7 @@ clearForm()
           Error !  {SubmittingError}
         </p> }
       </div>
-      <div className="grid gap-6 border p-6 rounded-lg shadow-lg dark:bg-black bg-slate-100 ">
+      <div className="grid gap-5">
 
        <div className="grid grid-cols-2 gap-3">
          <div className="grid gap-2">
@@ -240,7 +240,7 @@ clearForm()
           maxLength={10}
           placeholder="o-post"
            required 
-            className="rounded-xl"
+            className=""
             />
            {username && username.length<5 && <h1 className="text-red-600 text-xs ">username should have atleast 5 characters </h1>}
            {UserNameIsTaken && <h1 className="text-red-600 text-xs "><span className="text-black dark:text-white" >{username}</span> is taken </h1>}
@@ -255,7 +255,7 @@ clearForm()
           placeholder="example@gmail.com" 
           required
           onChange={handleEmailChange} 
-          className="rounded-xl"
+          className=""
           />
         </div>
        </div>
@@ -270,7 +270,7 @@ clearForm()
          onChange={handlePhoneChange}
           placeholder="+256123456789"  
           required
-           className="rounded-xl"
+           className=""
             />
         </div>
 
@@ -287,7 +287,7 @@ clearForm()
           onChange={handlePassword1Change}
           value={password1}
            required
-            className="rounded-xl"
+            className=""
             />
             {view1 ?(
                 <IoEye  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer" onClick={()=>HandleHide("password1")}  />
@@ -311,7 +311,7 @@ clearForm()
                 onChange={handlePassword2Change}
                 value={password2}
                 required
-                className="pr-10 rounded-xl" // Add padding to the right to avoid overlap with the icon
+                className="pr-10" // Add padding to the right to avoid overlap with the icon
                 />
                 {view2 ?(
                 <IoEye  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer" onClick={()=>HandleHide("password2")}  />
@@ -327,7 +327,7 @@ clearForm()
                 </div>
 
         <Button type="submit" disabled={!username || !password1 || !password2|| UserNameIsTaken || PasswordError || passwordsDontMatch} 
-        className="w-full bg-blue rounded-xl hover:bg-blue-800 hover:cursor-pointer transition-colors duration-300  ">
+        className="w-full">
           {isSubmitting?<div className="flex gap-2" >Submitting... <Loader /></div>:"Sign Up"}
         </Button>
       </div>

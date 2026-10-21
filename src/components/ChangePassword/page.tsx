@@ -138,7 +138,7 @@ const handlePassword2Change = (e: React.ChangeEvent<HTMLInputElement>)=>{
 
   return (
     <div className="flex flex-col items-center justify-center ">
-      <h1 className="text-2xl font-bold mb-4"> Password Reset Wizard</h1>
+      <h1 className="mb-4 font-serif text-2xl font-bold">Reset your password</h1>
  <form onSubmit={handleResetPassword} className={cn("flex flex-col gap-6", className)} {...props}>
       <div className="flex flex-col items-center gap-2 text-center">
         <p className="text-balance text-sm text-muted-foreground">
@@ -166,7 +166,7 @@ const handlePassword2Change = (e: React.ChangeEvent<HTMLInputElement>)=>{
           onChange={handlePassword1Change}
           value={password1}
            required
-                  className=" rounded-2xl" 
+                  className="" 
             />
             {view1 ?(
                 <IoEye  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer" onClick={()=>HandleHide("password1")}  />
@@ -190,7 +190,7 @@ const handlePassword2Change = (e: React.ChangeEvent<HTMLInputElement>)=>{
                 onChange={handlePassword2Change}
                 value={password2}
                 required
-                className="pr-10 rounded-2xl" // Add padding to the right to avoid overlap with the icon
+                className="pr-10" // Add padding to the right to avoid overlap with the icon
                 />
                 {view2 ?(
                 <IoEye  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer" onClick={()=>HandleHide("password2")}  />
@@ -205,7 +205,7 @@ const handlePassword2Change = (e: React.ChangeEvent<HTMLInputElement>)=>{
                 )}
                 </div>
 
-        <Button type="submit" disabled={!password1 || !password2 || PasswordError || passwordsDontMatch} className=" bg-blue rounded-xl dark:bg-gold ">
+        <Button type="submit" disabled={!password1 || !password2 || PasswordError || passwordsDontMatch} className=" w-full ">
           {isSubmitting?"Submitting":"Change Password"}
         </Button>
     </form>

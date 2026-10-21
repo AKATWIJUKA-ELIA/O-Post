@@ -1,77 +1,45 @@
 "use client"
-import { ArrowRight } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import Link from "next/link"
+
 import useGetAllPosts from "@/hooks/useGetAllPosts"
-import Image from "next/image"
-import { formatDate } from "@/lib/utils"
-import Loader from "./Loader/loader"
-import { getUserById } from "@/lib/convex"
-import { useEffect, useState } from "react"
-import { PostWithAuthor, User } from "@/lib/types"
-import { Id } from "../../convex/_generated/dataModel"
-import { Clock } from "lucide-react"
+import type { StoryLike } from "@/components/story-card"
+import { BlockHeading, CompactRow, FeatureCard } from "@/components/news-blocks"
 
-
+/** Two columns of the newest stories on the left, one large spotlight story on the right. */
 export function LatestNews() {
-        const { data:posts, } = useGetAllPosts();
-                const mainPost = posts && posts.length > 0 ? posts[0] : null;
-                const [Author, setAuthor] = useState<User|null>(null);
-                  const [PostsWithAuthors, setPostsWithAuthors] = useState<PostWithAuthor[]>([]);
+  const { data: posts } = useGetAllPosts()
 
-  useEffect(() => {
-    if (posts) {
-      setPostsWithAuthors(posts.toReversed().slice(0, 7));
-    }
-  }, [posts]);
-        
-                useEffect(()=>{
-                        async function fetchAuthor(){
-                                const response = await getUserById(mainPost?.authorId as Id<"users">);
-                                setAuthor(response.user);
-                        }
-                        fetchAuthor();
-                  },[mainPost])
-        if(!posts) return <div className=" items-center h-screen" >
-                <Loader/>
-        </div>
+  if (!posts || posts.length === 0) return null
+
+  // GetAllPosts returns newest first
+  const stories = posts as unknown as StoryLike[]
+  const latest = stories.slice(0, 8)
+  const spotlight = stories[8] ?? stories[stories.length - 1]
+  const half = Math.ceil(latest.length / 2)
+
   return (
-    <section className="py-16 md:py-24 bg-background">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-12">Other Updates</h2>
+    <section className="pb-10 pt-2">
+      <div className="mx-auto w-[95%] xl:w-[85%]">
+        <div className="grid gap-6 lg:grid-cols-3 lg:gap-4">
+          <div className="lg:col-span-2">
+            <BlockHeading title="Latest updates" />
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                {latest.slice(0, half).map((story) => (
+                  <CompactRow key={story._id} story={story} />
+                ))}
+              </div>
+              <div className="space-y-2">
+                {latest.slice(half).map((story) => (
+                  <CompactRow key={story._id} story={story} />
+                ))}
+              </div>
+            </div>
+          </div>
 
-        <div className="max-w-4xl mx-auto space-y-6">
-          {PostsWithAuthors.map((item, index) => (
-            <a
-              key={index}
-              href={`/news/${item._id}`}
-              className="group flex items-start space-x-4 p-4 rounded-lg hover:bg-muted/50 transition-colors border-l-2 border-transparent hover:border-secondary"
-            >
-              <div>
-                <Image
-                  src={item.postImage||"/placeholder.svg"}
-                  alt={item.title}
-                  width={100}
-                  height={50}
-                  className="w-24 h-12 object-cover rounded-lg flex-shrink-0 group-hover:scale-105 transition-transform duration-300"
-                />
-              </div>
-              <div className="flex-1 flex flex-col md:flex-row md:justify-between">
-                <div className="flex-1 space-y-2">
-                <div className="flex items-center space-x-3">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-secondary">{item.category}</span>
-                  <span className="text-xs text-muted-foreground flex items-center space-x-1">
-                    <Clock className="h-3 w-3" />
-                    <span>{formatDate(item._creationTime||0)}</span>
-                  </span>
-                </div>
-                <h3 className="font-serif text-lg md:text-xl font-semibold text-foreground group-hover:text-secondary transition-colors leading-tight">
-                  {item.title}
-                </h3>
-              </div>
-              </div>
-            </a>
-          ))}
+          <div className="flex flex-col">
+            <BlockHeading title="In case you missed it" />
+            <FeatureCard story={spotlight} className="flex-1" />
+          </div>
         </div>
       </div>
     </section>

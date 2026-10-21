@@ -3,16 +3,19 @@
 import { useState, useEffect } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Mail,  Calendar, Bookmark, MessageSquare, Settings,LayoutDashboardIcon, PenBoxIcon } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { Mail, Calendar, LayoutDashboardIcon, PenBoxIcon, Camera, BadgeCheck, ShieldAlert, KeyRound, LogOut, Phone, Clock, User as UserIcon, FileText, ThumbsUp, Check, X } from "lucide-react"
+import useGetAllPosts from "@/hooks/useGetAllPosts"
+import useLogout from "@/hooks/useLogout"
+import { PostCard, BlockHeading } from "@/components/news-blocks"
+import type { StoryLike } from "@/components/story-card"
 import Link from "next/link"
 import { useUser } from "@/hooks/useUser"
 import type { Id } from "../../../convex/_generated/dataModel"
 import type { UserProfile } from "@/lib/types"
 import { getUserById } from "@/lib/convex"
 import { User } from "@/lib/types"
-import { formatDate } from "@/lib/utils"
-import { Label } from "@/components/ui/label"
+import { formatDate, formatShortDate } from "@/lib/utils"
 import { useNotification } from "../NotificationContext"
 import { useUpdateUser } from "@/hooks/useUpdateUser"
 import { useMutation } from "convex/react"
@@ -119,6 +122,7 @@ const handleCancel=()=>{
                                 status: 'error',
                                 message: 'User profile not found.',
                         })
+                        setUpdatingProfile(false);
                         return;
                 }
                 const storageId = profileUpload ? await handleUpload(profileUpload) : null;
@@ -132,6 +136,7 @@ const handleCancel=()=>{
                                 status: 'error',
                                 message: response.message||'Failed to update profile.',
                         });
+                        setUpdatingProfile(false);
                         return;
                 }
                 setNotification({
@@ -142,188 +147,204 @@ const handleCancel=()=>{
                 setusername(null);
                 setprofilepreview(null);
                 setprofileUpload(null);
+                setUpdatingProfile(false);
+                // Refresh the displayed profile with the saved values
+                const refreshed = await getUserById(profile._id as Id<"users">);
+                setprofile(refreshed.user);
         };
 
-  // Mock user data - replace with real data from your backend
-  const userData = {
-    name: "Sarah Mitchell",
-    username: "@sarahmitchell",
-    email: "sarah.mitchell@example.com",
-    bio: "Journalist passionate about technology, politics, and social impact. Contributing to meaningful conversations through thoughtful reporting and analysis.",
-    location: "New York, NY",
-    joinedDate: "January 2024",
-    avatar: "/professional-journalist-woman.jpg",
-    stats: {
-      articles: 24,
-      comments: 156,
-      saved: 0,
-    },
+  const { data: posts } = useGetAllPosts()
+  const { LogOut: logOut } = useLogout()
+
+  const myPosts = ((posts ?? []) as unknown as (StoryLike & { authorId?: string; upvotes?: number })[]).filter(
+    (post) => profile?._id && post.authorId === profile._id,
+  )
+  const upvotesReceived = myPosts.reduce((sum, post) => sum + (post.upvotes ?? 0), 0)
+  const shownPosts = (myPosts.length > 0 ? myPosts : ((posts ?? []) as unknown as StoryLike[])).slice(0, 4)
+  const hasPendingChanges = (editUserName && !!username?.trim()) || !!profileUpload
+  const initial = profile?.username?.charAt(0).toUpperCase() ?? "U"
+
+  const details = [
+    { label: "Username", value: profile?.username, icon: UserIcon },
+    { label: "Email", value: profile?.email, icon: Mail },
+    { label: "Phone", value: profile?.phoneNumber || "Not provided", icon: Phone },
+    { label: "Member since", value: profile?._creationTime ? formatShortDate(profile._creationTime) : "—", icon: Calendar },
+    { label: "Last login", value: profile?.lastLogin ? formatDate(profile.lastLogin) : "—", icon: Clock },
+  ]
+
+  if (user === null) {
+    return (
+      <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4 bg-[#f4f4f6] px-4 text-center">
+        <p className="text-muted-foreground">You need to be signed in to view your account.</p>
+        <Button asChild className="bg-crimson text-white hover:bg-crimson/90">
+          <Link href="/sign-in">Log in</Link>
+        </Button>
+      </div>
+    )
   }
 
-
-
   return (
-    <div className="min-h-screen bg-background">
-      {/* Hero Section */}
-      <div className="bg-gradient-to-br from-primary/5 to-accent/5 border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-8">
-            <Avatar className="relative h-24 w-24 sm:h-32 sm:w-32 border-4 border-background shadow-lg">
-              <AvatarImage src={profilepreview || profile?.profilePicture || "/placeholder.svg"} alt={profile?.username} />
-              <AvatarFallback className="text-8xl  font-serif font-bold items-center-safe">{profile?.username && profile?.username.slice(0,1)}</AvatarFallback>
-              <div className="absolute top-0 bottom-0 right-0 left-0 flex items-center justify-center
-               bg-blue/40 hover:bg-blue/50 rounded-full p-2 border-2 border-background
-                hover:cursor-pointer"
-                onClick={()=>handleImageChange()}
-                >
-              <PenBoxIcon className="hover:cursor-pointer text-gray-400"   />
-              </div>
-            </Avatar>
-            <div className="flex-1 w-full ">    
-              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-                <div>
-                  <h1 className=" flex items-center gap-3 text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-foreground mb-2">
-                    {profile?.username || "User"} <PenBoxIcon className="hover:cursor-pointer" onClick={()=>setEditUserName(true)}  />
-                  </h1>
-
-                  { editUserName && <div className="flex  " >
-                        <Label htmlFor="username" className="mr-2" >New Username:</Label>
-                        <input type="text" 
-                        name="username" 
-                        id="username" 
-                        onChange={(e)=>setusername(e.target.value)}
-                        value={username||""}
-                        placeholder={profile?.username||"Username"}
-                  className="border flex border-border rounded-3xl px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue focus:border-transparent"
-                  />
-                        <Button className="ml-2 rounded-2xl bg-red" onClick={()=>handleCancel()} >Cancel</Button>
-                  </div>}
-
-                  <p className="text-base sm:text-lg text-muted-foreground mb-3 sm:mb-4">{profile?.username}</p>
-                  <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-1.5">
-                      <Mail className="h-4 w-4" />
-                      <span className="break-all">{profile?.email}</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <Calendar className="h-4 w-4" />
-                      <span>Joined {formatDate(profile?._creationTime||0)}</span>
-                    </div>
-                  </div>
-                  {(editUserName || !!profilepreview) && (
-                    <Button className="ml-2 mt-5 rounded-2xl bg-blue" onClick={() => handleUpdateProfile()}>
-                      {updatingProfile ? "Updating..." : "Update"}
-                    </Button>
-                  )}
-                </div>
-                {user?.role==="admin"?(
-                        <Link href="/admin" className="hover:cursor-pointer">
-                  <Button variant="outline" className="w-full sm:w-auto gap-2 hover:cursor-pointer rounded-2xl bg-transparent">
-                    <LayoutDashboardIcon className="h-4 w-4" />
-                    DashBoard
-                  </Button>
-                </Link>
-                ):(
-                <div className="w-full sm:w-auto" ></div>
-                )}
-              </div>
-              <p className="mt-4 sm:mt-6 text-base sm:text-lg text-foreground leading-relaxed max-w-3xl">
-                {/* {userData.bio} */}
-              </p>
-            </div>
-          </div>
-
-          {/* Stats */}
-          {/* <div className="grid grid-cols-3 gap-4 sm:gap-6 mt-8 sm:mt-12">
-            <Card className="p-4 sm:p-6 text-center hover:shadow-md transition-shadow">
-              <div className="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold text-foreground">
-                {userData.stats.articles}
-              </div>
-              <div className="text-xs sm:text-sm text-muted-foreground mt-1 sm:mt-2">Articles Read</div>
-            </Card>
-            <Card className="p-4 sm:p-6 text-center hover:shadow-md transition-shadow">
-              <div className="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold text-foreground">
-                {userData.stats.comments}
-              </div>
-              <div className="text-xs sm:text-sm text-muted-foreground mt-1 sm:mt-2">Comments</div>
-            </Card>
-            <Card className="p-4 sm:p-6 text-center hover:shadow-md transition-shadow">
-              <div className="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold text-foreground">
-                {userData.stats.saved}
-              </div>
-              <div className="text-xs sm:text-sm text-muted-foreground mt-1 sm:mt-2">Saved</div>
-            </Card>
-          </div> */}
-        </div>
+    <div className="min-h-screen bg-[#f4f4f6] pb-16">
+      {/* Cover */}
+      <div className="relative h-40 overflow-hidden bg-gradient-to-r from-[#16161d] via-[#2a0d18] to-crimson sm:h-48">
+        <div className="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(115deg,transparent_0_28px,rgba(255,255,255,0.04)_28px_56px)]" />
       </div>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
-          {/* Recent Activity */}
-          {/* <div className="lg:col-span-2">
-            <h2 className="text-2xl sm:text-3xl font-serif font-bold text-foreground mb-6 sm:mb-8">Recent Activity</h2>
-            <div className="space-y-4 sm:space-y-6">
-              {recentActivity.map((activity) => (
-                <Card key={activity.id} className="p-4 sm:p-6 hover:shadow-md transition-shadow">
-                  <div className="flex items-start gap-3 sm:gap-4">
-                    <div className="mt-1">
-                      {activity.type === "comment" ? (
-                        <MessageSquare className="h-5 w-5 text-muted-foreground" />
-                      ) : (
-                        <Bookmark className="h-5 w-5 text-muted-foreground" />
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
-                        <h3 className="font-semibold text-foreground text-base sm:text-lg break-words">
-                          {activity.type === "comment" ? "Commented on" : "Saved"}: {activity.title}
-                        </h3>
-                        <span className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap">
-                          {activity.date}
-                        </span>
-                      </div>
-                      {activity.excerpt && (
-                        <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">{activity.excerpt}</p>
-                      )}
-                    </div>
-                  </div>
-                </Card>
-              ))}
+      <div className="mx-auto w-[95%] xl:w-[85%]">
+        {/* Identity card */}
+        <section className="relative -mt-16 rounded-lg border border-border bg-card p-5 shadow-sm sm:-mt-20 sm:p-8">
+          <div className="flex flex-col gap-6 md:flex-row md:items-end">
+            <div className="relative -mt-16 w-fit sm:-mt-20">
+              <Avatar className="h-28 w-28 border-4 border-card shadow-lg sm:h-32 sm:w-32">
+                <AvatarImage src={profilepreview || profile?.profilePicture || undefined} alt={profile?.username} />
+                <AvatarFallback className="bg-crimson font-serif text-5xl font-bold text-white">{initial}</AvatarFallback>
+              </Avatar>
+              <button
+                onClick={() => handleImageChange()}
+                className="absolute bottom-1 right-1 flex h-9 w-9 items-center justify-center rounded-full border-2 border-card bg-[#16161d] text-white shadow transition hover:bg-crimson"
+                aria-label="Change profile picture"
+                title="Change profile picture"
+              >
+                <Camera className="h-4 w-4" />
+              </button>
             </div>
-          </div> */}
 
-          {/* Saved Articles */}
-          {/* <div>
-            <h2 className="text-2xl sm:text-3xl font-serif font-bold text-foreground mb-6 sm:mb-8">Saved Articles</h2>
-            <div className="space-y-4 sm:space-y-6">
-              {savedArticles.map((article) => (
-                <Card key={article.id} className="overflow-hidden hover:shadow-md transition-shadow">
-                  <img
-                    src={article.image || "/placeholder.svg"}
-                    alt={article.title}
-                    className="w-full h-40 sm:h-48 object-cover"
+            <div className="min-w-0 flex-1">
+              {editUserName ? (
+                <div className="flex max-w-md items-center gap-2">
+                  <Input
+                    autoFocus
+                    aria-label="New username"
+                    value={username || ""}
+                    placeholder={profile?.username || "Username"}
+                    onChange={(e) => setusername(e.target.value)}
+                    className="h-11 text-lg font-semibold"
                   />
-                  <div className="p-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                        {article.category}
-                      </span>
-                      <span className="text-xs text-muted-foreground">•</span>
-                      <span className="text-xs text-muted-foreground">{article.date}</span>
-                    </div>
-                    <h3 className="font-serif font-semibold text-foreground text-base sm:text-lg leading-snug">
-                      {article.title}
-                    </h3>
-                  </div>
-                </Card>
-              ))}
-              <Button variant="outline" className="w-full bg-transparent">
-                View All Saved Articles
-              </Button>
+                  <Button variant="ghost" size="icon" onClick={() => handleCancel()} aria-label="Cancel">
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ) : (
+                <h1 className="flex flex-wrap items-center gap-3 font-serif text-3xl font-bold text-foreground sm:text-4xl">
+                  {profile?.username || "Your account"}
+                  <button
+                    onClick={() => setEditUserName(true)}
+                    className="rounded-md p-1.5 text-muted-foreground transition hover:bg-muted hover:text-foreground"
+                    aria-label="Edit username"
+                    title="Edit username"
+                  >
+                    <PenBoxIcon className="h-5 w-5" />
+                  </button>
+                </h1>
+              )}
+
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                {profile?.isVerified ? (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-1 text-xs font-semibold text-emerald-700">
+                    <BadgeCheck className="h-3.5 w-3.5" /> Verified
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2.5 py-1 text-xs font-semibold text-amber-700">
+                    <ShieldAlert className="h-3.5 w-3.5" /> Not verified
+                  </span>
+                )}
+                {profile?.role && (
+                  <span className="rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold capitalize text-primary">{profile.role}</span>
+                )}
+                <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
+                  <Mail className="h-4 w-4" /> <span className="break-all">{profile?.email}</span>
+                </span>
+              </div>
             </div>
-          </div> */}
+
+            <div className="flex flex-wrap gap-2">
+              {hasPendingChanges && (
+                <Button onClick={() => handleUpdateProfile()} disabled={updatingProfile} className="bg-crimson text-white hover:bg-crimson/90">
+                  <Check className="mr-1.5 h-4 w-4" />
+                  {updatingProfile ? "Saving…" : "Save changes"}
+                </Button>
+              )}
+              {profileUpload && !updatingProfile && (
+                <Button variant="outline" onClick={() => handleCancel()}>
+                  Discard
+                </Button>
+              )}
+              {user?.role === "admin" && (
+                <Button asChild variant="outline">
+                  <Link href="/admin">
+                    <LayoutDashboardIcon className="mr-1.5 h-4 w-4" /> Dashboard
+                  </Link>
+                </Button>
+              )}
+            </div>
+          </div>
+        </section>
+
+        <div className="mt-6 grid gap-6 lg:grid-cols-3">
+          {/* Account details */}
+          <section className="rounded-lg border border-border bg-card shadow-sm lg:col-span-2">
+            <div className="border-b border-border px-5 py-4 sm:px-6">
+              <h2 className="font-bold text-foreground">Account details</h2>
+              <p className="text-xs text-muted-foreground">The information connected to your O-Post account.</p>
+            </div>
+            <dl className="divide-y divide-border">
+              {details.map(({ label, value, icon: Icon }) => (
+                <div key={label} className="flex items-center gap-4 px-5 py-3.5 sm:px-6">
+                  <Icon className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
+                  <dt className="w-32 flex-shrink-0 text-sm text-muted-foreground">{label}</dt>
+                  <dd className="min-w-0 break-words text-sm font-medium text-foreground">{value || "—"}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+
+          <div className="space-y-6">
+            {myPosts.length > 0 && (
+              <section className="grid grid-cols-2 gap-3">
+                <div className="rounded-lg border border-border bg-card p-4 shadow-sm">
+                  <FileText className="h-5 w-5 text-primary" />
+                  <p className="mt-2 text-2xl font-bold tabular-nums">{myPosts.length}</p>
+                  <p className="text-xs text-muted-foreground">Articles published</p>
+                </div>
+                <div className="rounded-lg border border-border bg-card p-4 shadow-sm">
+                  <ThumbsUp className="h-5 w-5 text-emerald-600" />
+                  <p className="mt-2 text-2xl font-bold tabular-nums">{upvotesReceived}</p>
+                  <p className="text-xs text-muted-foreground">Upvotes received</p>
+                </div>
+              </section>
+            )}
+
+            <section className="rounded-lg border border-border bg-card shadow-sm">
+              <div className="border-b border-border px-5 py-4">
+                <h2 className="font-bold text-foreground">Security</h2>
+              </div>
+              <div className="space-y-1 p-2">
+                <Link href="/password-reset" className="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm transition hover:bg-muted">
+                  <KeyRound className="h-4 w-4 text-muted-foreground" />
+                  <span className="font-medium">Change password</span>
+                </Link>
+                <button
+                  onClick={() => logOut()}
+                  className="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-left text-sm text-destructive transition hover:bg-destructive/10"
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span className="font-medium">Log out</span>
+                </button>
+              </div>
+            </section>
+          </div>
         </div>
+
+        {shownPosts.length > 0 && (
+          <section className="mt-10">
+            <BlockHeading title={myPosts.length > 0 ? "Your articles" : "Recommended for you"} />
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {shownPosts.map((story) => (
+                <PostCard key={story._id} story={story} />
+              ))}
+            </div>
+          </section>
+        )}
       </div>
     </div>
   )
