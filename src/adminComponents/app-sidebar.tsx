@@ -1,173 +1,33 @@
 "use client"
 
 import * as React from "react"
-import {
-  BarChartIcon,
-  CameraIcon,
-  ClipboardListIcon,
-  DatabaseIcon,
-  FileCodeIcon,
-  FileIcon,
-  FileTextIcon,
-  FolderIcon,
-  HelpCircleIcon,
-  LayoutDashboardIcon,
-  ListIcon,
-  SearchIcon,
-  SettingsIcon,
-  UsersIcon,
-} from "lucide-react"
-
-// import { NavDocuments } from "@/components/nav-documents"
-import { NavMain } from "@/adminComponents/nav-main"
-// import { NavSecondary } from "@/adminComponents/nav-secondary"
-import { NavUser } from "@/adminComponents/nav-user"
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarMenu,
-} from "../components/ui/sidebar"
-import Image from "next/image"
 import Link from "next/link"
 
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "#",
-      icon: LayoutDashboardIcon,
-    },
-    {
-      title: "Lifecycle",
-      url: "#",
-      icon: ListIcon,
-    },
-    {
-      title: "Analytics",
-      url: "#",
-      icon: BarChartIcon,
-    },
-    {
-      title: "Projects",
-      url: "#",
-      icon: FolderIcon,
-    },
-    {
-      title: "Team",
-      url: "#",
-      icon: UsersIcon,
-    },
-  ],
-  navClouds: [
-    {
-      title: "Capture",
-      icon: CameraIcon,
-      isActive: true,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Proposal",
-      icon: FileTextIcon,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Prompts",
-      icon: FileCodeIcon,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  navSecondary: [
-    {
-      title: "Settings",
-      url: "#",
-      icon: SettingsIcon,
-    },
-    {
-      title: "Get Help",
-      url: "#",
-      icon: HelpCircleIcon,
-    },
-    {
-      title: "Search",
-      url: "#",
-      icon: SearchIcon,
-    },
-  ],
-  documents: [
-    {
-      name: "Data Library",
-      url: "#",
-      icon: DatabaseIcon,
-    },
-    {
-      name: "Reports",
-      url: "#",
-      icon: ClipboardListIcon,
-    },
-    {
-      name: "Word Assistant",
-      url: "#",
-      icon: FileIcon,
-    },
-  ],
-}
+import { NavMain } from "@/adminComponents/nav-main"
+import { NavUser } from "@/adminComponents/nav-user"
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from "../components/ui/sidebar"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="icon" {...props} className="h-[90%] mt-1  bg-blue-400" >
-      <SidebarHeader>
-        
-        <SidebarMenu>
-                <Link href="/">
-                  <Image src="/logo.png" width="400" height={50} alt="User Avatar" />
-                </Link>
-        </SidebarMenu>
+    <Sidebar collapsible="icon" {...props}>
+      <SidebarHeader className="border-b border-sidebar-border p-3">
+        <Link href="/admin" className="flex items-center gap-3 overflow-hidden">
+          <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-md bg-crimson font-serif text-lg font-bold text-white">
+            O
+          </span>
+          <span className="leading-tight group-data-[collapsible=icon]:hidden">
+            <span className="block font-serif text-base font-bold text-white">The O-Post</span>
+            <span className="block text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-white/50">Newsroom admin</span>
+          </span>
+        </Link>
       </SidebarHeader>
-      <SidebarContent>
-        <NavMain  />
-        {/* <NavDocuments items={data.documents} /> */}
-        {/* <NavSecondary items={data.navSecondary} className="mt-5" /> */}
+      <SidebarContent className="pt-2">
+        <NavMain />
       </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={data.user} />
+      <SidebarFooter className="border-t border-sidebar-border">
+        <NavUser />
       </SidebarFooter>
+      <SidebarRail />
     </Sidebar>
   )
 }

@@ -2,14 +2,12 @@
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Search, Plus, Calendar, Trash2, Share2 } from "lucide-react"
+import { Search, Plus, Trash2, Share2, PenSquare, FileText, FolderOpen, ThumbsUp, CalendarClock } from "lucide-react"
+import { useMemo } from "react"
 import Link from "next/link"
 import useGetAllPosts from "@/hooks/useGetAllPosts"
-import {  formatDate } from "@/lib/utils"
-import { getUserById } from "@/lib/convex"
+import { formatShortDate, timeAgo } from "@/lib/utils"
 import { PostWithAuthor } from "@/lib/types"
 import { deletePost } from "@/lib/convex"
 import { Id } from "../../../convex/_generated/dataModel"
@@ -20,6 +18,7 @@ import { BASE_URL } from "@/lib/urls"
 const PostList=() =>{
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
+  const [categoryFilter, setCategoryFilter] = useState("all")
   const {data:posts} = useGetAllPosts();
   const [PostsWithAuthors, setPostsWithAuthors] = useState<PostWithAuthor[]>([]);
   const {setNotification} = useNotification();
@@ -59,101 +58,181 @@ const PostList=() =>{
 
 
 
-  const filteredNews = PostsWithAuthors?.filter((item) => item.title.toLowerCase().includes(searchQuery.toLowerCase()))
+  const categoryKey = (category: string) => category?.trim().toLowerCase() || "general"
+
+  const categories = useMemo(
+    () => Array.from(new Set(PostsWithAuthors.map((post) => categoryKey(post.category)))).sort(),
+    [PostsWithAuthors],
+  )
+
+  const stats = useMemo(() => {
+    const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000
+    return [
+      { label: "Total articles", value: PostsWithAuthors.length, icon: FileText, accent: "bg-primary/10 text-primary" },
+      { label: "Categories", value: categories.length, icon: FolderOpen, accent: "bg-sky-500/10 text-sky-600" },
+      {
+        label: "Total upvotes",
+        value: PostsWithAuthors.reduce((sum, post) => sum + (post.upvotes ?? 0), 0),
+        icon: ThumbsUp,
+        accent: "bg-emerald-500/10 text-emerald-600",
+      },
+      {
+        label: "Published this week",
+        value: PostsWithAuthors.filter((post) => (post._creationTime ?? 0) >= weekAgo).length,
+        icon: CalendarClock,
+        accent: "bg-crimson/10 text-crimson",
+      },
+    ]
+  }, [PostsWithAuthors, categories])
+
+  const filteredNews = PostsWithAuthors.filter(
+    (item) =>
+      item.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
+      (categoryFilter === "all" || categoryKey(item.category) === categoryFilter),
+  )
 
   if (loading) {
     return (
-      <div className="flex animate-pulse items-center justify-center h-screen">
-        <div className="animate-spin  rounded-full h-12 w-12 border-b-2 border-blue"></div>
-        loading...
+      <div className="flex h-[60vh] items-center justify-center gap-3 text-muted-foreground">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-crimson border-t-transparent" />
+        Loading articles…
       </div>
     )
   }
 
   return (
     <div className="space-y-6">
-      <div className=" flex flex-col border mt-2 mx-3 p-3 rounded-2xl bg-blue/5" >
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      {/* Title */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight md:ml-[15%]">News & Articles</h1>
-          <p className="text-muted-foreground">Manage your posts and articles</p>
+          <h2 className="text-2xl font-bold tracking-tight text-foreground">News & Articles</h2>
+          <p className="text-sm text-muted-foreground">Manage, edit and share everything published on The O-Post.</p>
         </div>
-        <Button asChild className="bg-blue hover:bg-red rounded-2xl" >
+        <Button asChild className="bg-crimson text-white hover:bg-crimson/90">
           <Link href="/admin/create">
             <Plus className="mr-2 h-4 w-4" />
-            Create Article
+            Create article
           </Link>
         </Button>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center mt-2 justify-between">
-        <div className="relative w-full     ">
-          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+      {/* Stats */}
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4">
+        {stats.map(({ label, value, icon: Icon, accent }) => (
+          <div key={label} className="flex items-center gap-4 rounded-lg border border-border bg-card p-4 shadow-sm">
+            <span className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-lg ${accent}`}>
+              <Icon className="h-5 w-5" />
+            </span>
+            <div className="min-w-0">
+              <p className="text-2xl font-bold tabular-nums text-foreground">{value}</p>
+              <p className="truncate text-xs font-medium text-muted-foreground">{label}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Toolbar */}
+      <div className="flex flex-col gap-3 rounded-lg border border-border bg-card p-3 shadow-sm sm:flex-row sm:items-center">
+        <div className="relative flex-1">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Search articles..."
-            className="pl-8  w-full  rounded-2xl "
+            placeholder="Search articles by title…"
+            aria-label="Search articles"
+            className="pl-9"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-        
           />
         </div>
-
+        <select
+          value={categoryFilter}
+          onChange={(e) => setCategoryFilter(e.target.value)}
+          aria-label="Filter by category"
+          className="h-9 rounded-md border border-input bg-background px-3 text-sm capitalize shadow-xs focus:outline-none focus:ring-2 focus:ring-ring/50"
+        >
+          <option value="all">All categories</option>
+          {categories.map((category) => (
+            <option key={category} value={category}>
+              {category}
+            </option>
+          ))}
+        </select>
+        <p className="text-xs text-muted-foreground sm:ml-2 sm:whitespace-nowrap">
+          {filteredNews.length} of {PostsWithAuthors.length} shown
+        </p>
       </div>
-      </div>
 
-      
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4 ">
-          {filteredNews?.length === 0 ? (
-            <div className="col-span-full text-center py-10">
-              <p className="text-muted-foreground">No articles found.</p>
-            </div>
-          ) : (
-            filteredNews?.map((item) => (
-              
-                <Card className="h-full overflow-hidden hover:shadow-md transition-shadow">
-                        <Link key={item._id} href={`/admin/edit/${item._id}`} className="block">
-                  {item.postImage && (
-                    <div className="aspect-video w-full overflow-hidden">
-                      <img
-                        src={item.postImage || "/placeholder.svg"}
-                        alt={item.title}
-                        className="h-full w-full object-cover transition-transform hover:scale-105"
-                      />
-                    </div>
-                  )}
-                  </Link>
-                  <CardHeader className="p-4">
-                    <div className="flex items-center justify-between">
-                      <Badge variant="outline">{item.category}</Badge>
-                      <div className="flex items-center text-sm text-muted-foreground">
-                        <Calendar className="mr-1 h-3 w-3" />
-                        {formatDate(item._creationTime||0)}
-                      </div>
-                    </div>
-                    <CardTitle className="line-clamp-2 text-lg">{item.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-4 pt-0">
-                    <p className="line-clamp-3 text-sm text-muted-foreground">{item.excerpt}</p>
-                  </CardContent>
-                  <CardFooter className=" flex justify-between p-4 pt-0">
-                    <p className="text-sm font-medium">By {item.author?.username}</p>
-                    <div className="flex items-center gap-3 " >
-                        <h1 className="flex gap-2
-                         border rounded-full p-1 border-blue items-center
-                          hover:cursor-pointer transition duration-300  
-                          text-blue hover:bg-blue hover:text-white "
-                          onClick={()=>handleShare(`${BASE_URL}/news/${item._id}`, item.title)}
-                          > 
-                                <Share2 className=" w-4 h-4"  /> Share </h1>
-                    <Trash2 className="hover:cursor-pointer text-2xl text-red-600 font-bold hover:scale-125 transition duration-300 " aria-label="delete this post"  onClick={handleDelete(item._id)} />
-                    </div>
-                  </CardFooter>
-                </Card>
-              
-            ))
-          )}
+      {/* Articles */}
+      {filteredNews.length === 0 ? (
+        <div className="rounded-lg border border-dashed border-border bg-card py-16 text-center text-muted-foreground">
+          No articles match your filters.
         </div>
-      
+      ) : (
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+          {filteredNews.map((item) => (
+            <article
+              key={item._id}
+              className="group flex flex-col overflow-hidden rounded-lg border border-border bg-card shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+            >
+              <Link href={`/admin/edit/${item._id}`} className="relative block aspect-video overflow-hidden bg-muted">
+                <img
+                  src={item.postImage || "/placeholder.svg"}
+                  alt={item.title}
+                  className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                />
+                <span className="absolute left-3 top-3 rounded bg-black/70 px-2 py-0.5 text-[0.65rem] font-bold uppercase tracking-wider text-white">
+                  {item.category?.trim() || "General"}
+                </span>
+              </Link>
+
+              <div className="flex flex-1 flex-col p-4">
+                <Link href={`/admin/edit/${item._id}`}>
+                  <h3 className="line-clamp-2 font-bold leading-snug text-foreground transition group-hover:text-crimson">
+                    {item.title}
+                  </h3>
+                </Link>
+                <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{item.excerpt}</p>
+
+                <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
+                  <span>
+                    By <span className="font-semibold text-foreground">{item.author?.username ?? "Unknown"}</span>
+                  </span>
+                  <span title={formatShortDate(item._creationTime || 0)}>{timeAgo(item._creationTime || 0)}</span>
+                </div>
+                <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground">
+                  <span className="inline-flex items-center gap-1">
+                    <ThumbsUp className="h-3 w-3" /> {item.upvotes ?? 0}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1 border-t border-border p-2">
+                <Button asChild variant="ghost" size="sm" className="flex-1">
+                  <Link href={`/admin/edit/${item._id}`}>
+                    <PenSquare className="mr-1.5 h-4 w-4" /> Edit
+                  </Link>
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="flex-1"
+                  onClick={() => handleShare(`${BASE_URL}/news/${item._id}`, item.title)}
+                >
+                  <Share2 className="mr-1.5 h-4 w-4" /> Share
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="flex-1 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                  onClick={handleDelete(item._id)}
+                  aria-label="Delete this post"
+                >
+                  <Trash2 className="mr-1.5 h-4 w-4" /> Delete
+                </Button>
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
